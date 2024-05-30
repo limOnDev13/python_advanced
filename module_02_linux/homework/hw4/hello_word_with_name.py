@@ -9,7 +9,6 @@
 
 from flask import Flask
 from datetime import datetime
-import sys
 
 app = Flask(__name__)
 
