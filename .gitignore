@@ -139,3 +139,6 @@ dmypy.json
 .swp
 
 prettifier.py
+
+# my files
+/module_02_linux/materials/my_app.py
