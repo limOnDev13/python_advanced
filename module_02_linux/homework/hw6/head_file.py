@@ -27,13 +27,24 @@ hello world!
 """
 
 from flask import Flask
+import os
+
 
 app = Flask(__name__)
 
 
+BASE_DIR: str = os.path.dirname(os.path.abspath(__file__))
+
+
 @app.route("/head_file/<int:size>/<path:relative_path>")
-def head_file(size: int, relative_path: str):
-    ...
+def head_file(size: int, relative_path: str) -> str:
+    """
+    Функция - эндпоинт. Через url получает относительный путь к файлу и количество символов,
+    которые необходимо прочитать. Это количество может превышать количество символов в файле.
+    :param size:
+    :param relative_path:
+    :return:
+    """
 
 
 if __name__ == "__main__":
