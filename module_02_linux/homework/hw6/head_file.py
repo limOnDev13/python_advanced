@@ -37,14 +37,30 @@ BASE_DIR: str = os.path.dirname(os.path.abspath(__file__))
 
 
 @app.route("/head_file/<int:size>/<path:relative_path>")
-def head_file(size: int, relative_path: str) -> str:
+def head_file(size: int, relative_path: str) -> tuple[str, int]:
     """
     Функция - эндпоинт. Через url получает относительный путь к файлу и количество символов,
     которые необходимо прочитать. Это количество может превышать количество символов в файле.
-    :param size:
-    :param relative_path:
-    :return:
+    :param size: Количество символов, которые необходимо вывести
+    :type size: int
+    :param relative_path: Относительный путь до файла
+    :type relative_path: str
+    :return: Строку, с информацией о файле и первые size символов из этого файла
+    :rtype: tuple[str, int]
     """
+    file_path: str = os.path.join(BASE_DIR, relative_path)
+
+    try:
+        with open(file_path, 'r', encoding='utf-8') as in_file:
+            text: str = in_file.read(size)
+
+            return '{abs_path} {result_size}<br>{result_text}'.format(
+                abs_path=file_path,
+                result_size=len(text),
+                result_text=text
+            ), 200
+    except FileNotFoundError:
+        return 'Файл не найден', 404
 
 
 if __name__ == "__main__":
