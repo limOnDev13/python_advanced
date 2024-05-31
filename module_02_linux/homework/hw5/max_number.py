@@ -18,9 +18,22 @@ from flask import Flask
 app = Flask(__name__)
 
 
-@app.route("/max_number/...")
-def max_number():
-    ...
+@app.route("/max_number/<path:numbers>")
+def max_number(numbers: str) -> tuple[str, int]:
+    """
+    Функция - эндпоинт. Выводит максимальное число из url
+    :param numbers: url, который содержит числа, разделенные '/'. Если введено что-то, кроме чисел,
+    сообщает об этом пользователю и выдает статус код 400
+    :type numbers: str
+    :return: Выводит максимальное число
+    :rtype: tuple[str, int]
+    """
+    try:
+        nums: list[float] = [float(num) for num in numbers.split('/')]
+
+        return str(max(nums)), 200
+    except ValueError:
+        return 'Введите числа через / чтобы увидеть максимальное', 400
 
 
 if __name__ == "__main__":
