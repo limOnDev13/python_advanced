@@ -42,6 +42,29 @@ import time
 from typing import Optional
 
 
+def decrypt_with_steck(encryption: str) -> str:
+    """
+    Функция из разбора домашнего задания. Добавлена, чтобы сравнить ее с моими решениями
+    :param encryption: Зашифрованная строка
+    :type encryption: str
+    :return: Расшифрованная строка
+    :rtype: str
+    """
+    result: list[str] = list()
+
+    for sym in encryption:
+        result.append(sym)
+
+        if len(result) > 2 and (result[-1], result[-2]) == ('.', '.'):
+            result.pop()
+            result.pop()
+
+            if result:
+                result.pop()
+
+    return ''.join([ch for ch in result if ch != '.'])
+
+
 def decrypt(encryption: str) -> str:
     """
     Функция дешифрует строку согласно условиям задачи
@@ -150,29 +173,43 @@ def trace_malloc_and_time(functions: list[Callable[[str], str]]) -> None:
         print('-' * 50)
 
 
+def check_decrypt_func(func: Callable[[str], str]) -> None:
+    """
+    Функция печатает результат работы функции дешифрования (и сразу проверяет ее) на примерах из условия задачи
+    :param func: Функция дешифровки
+    :type func: Callable[[str], str]
+    :return: None
+    """
+    examples: list[tuple[str, str]] = [
+        ('абра-кадабра.', 'абра-кадабра'),
+        ('абраа..-кадабра', 'абра-кадабра'),
+        ('абраа..-.кадабра', 'абра-кадабра'),
+        ('абра--..кадабра', 'абра-кадабра'),
+        ('абрау...-кадабра', 'абра-кадабра'),
+        ('абра........', ''),
+        ('абр......a.', 'a'),
+        ('1..2.3', '23'),
+        ('.', ''),
+        ('1.......................', '')
+    ]
+
+    for example in examples:
+        print(f'Шифровка: {example[0]}; дешифровка: {func(example[0])};'
+              f' результат верен? {func(example[0]) == example[1]}')
+    print('-' * 50)
+
+
 if __name__ == '__main__':
     data: str = sys.stdin.read()
     decryption: str = decrypt(data)
     print(decryption)
 
-    # print(
-    #     f"{super_decrypt('абра-кадабра.')} V абра-кадабра = {super_decrypt('абра-кадабра.') == 'абра-кадабра'}")
-    # print(
-    #     f"{super_decrypt('абраа..-кадабра')} V абра-кадабра = {super_decrypt('абраа..-кадабра') == 'абра-кадабра'}")
-    # print(
-    #     f"{super_decrypt('абраа..-.кадабра')} V абра-кадабра = {super_decrypt('абраа..-.кадабра') == 'абра-кадабра'}")
-    # print(
-    #     f"{super_decrypt('абра--..кадабра')} V абра-кадабра = {super_decrypt('абра--..кадабра') == 'абра-кадабра'}")
-    # print(
-    #     f"{super_decrypt('абрау...-кадабра')} V абра-кадабра = {super_decrypt('абрау...-кадабра') == 'абра-кадабра'}")
-    # print(f"{super_decrypt('абра........')} V  = {super_decrypt('абра........') == ''}")
-    # print(f"{super_decrypt('абр......a.')} V a = {super_decrypt('абр......a.') == 'a'}")
-    # print(f"{super_decrypt('1..2.3')} V 23 = {super_decrypt('1..2.3') == '23'}")
-    # print(f"{super_decrypt('.')} V  = {super_decrypt('.') == ''}")
-    # print(
-    #     f"{super_decrypt('1.......................')} V  = {super_decrypt('1.......................') == ''}")
+    check_decrypt_func(decrypt)
+    check_decrypt_func(decrypt_without_re)
+    check_decrypt_func(super_decrypt)
+    check_decrypt_func(decrypt_with_steck)
 
-    trace_malloc_and_time([decrypt, decrypt_without_re, super_decrypt])
+    trace_malloc_and_time([decrypt, decrypt_without_re, super_decrypt, decrypt_with_steck])
     # Согласно малочисленным тестам в среднем (когда количества точек и символов соразмерны) алгоритм decrypt_without_re
     # лучше по времени и по памяти. В крайних случаях (когда количества точек и символов несоразмерны)
     # алгоритм super_decrypt работает быстрее всех. В средних случаях алгоритмы super_decrypt и decrypt_without_re
