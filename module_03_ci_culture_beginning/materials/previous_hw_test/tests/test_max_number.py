@@ -17,3 +17,12 @@ class TestMaxNumberApp(unittest.TestCase):
         response_text = response.data.decode()
         correct_answer_str = f'<i>{max(numbers)}</i>'
         self.assertTrue(correct_answer_str in response_text)
+
+    def test_cannot_get_not_numbers(self):
+        """Негативный юнит-тест. Проверяет, что эндпоинт не способен обрабатывать что-то, что не является числом"""
+        not_numbers = 'user', 'name'
+        url = self.base_url + '/'.join(not_numbers)
+        response = self.app.get(url)
+        response_text = response.data.decode()
+        correct_answer_str = "Переданы некорректные значения"
+        self.assertEqual(response_text, correct_answer_str)
