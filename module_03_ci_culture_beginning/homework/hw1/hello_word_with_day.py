@@ -18,8 +18,12 @@ GREETINGS = (
 @app.route('/hello-world/<name>')
 def hello_world(name: str) -> str:
     weekday: int = datetime.today().weekday()
-    greeting: str = GREETINGS[weekday]
-    return f'Привет, {name}. {greeting}!'
+
+    if name.lower() in [word.lower() for word in GREETINGS]:
+        return 'Спасибо! И вам того же)'
+    else:
+        greeting: str = GREETINGS[weekday]
+        return f'Привет, {name}. {greeting}!'
 
 
 if __name__ == '__main__':
