@@ -83,3 +83,72 @@ class TestAccounting(TestCase):
 
         with self.assertRaises(ValueError):
             self.app.get(url)
+
+    def test_calculate_with_year_from_db(self):
+        """Проверка расчета расходов за год. Год имеется в бд"""
+        years: tuple[int, ...] = (2000, 2024)
+
+        for year in years:
+            with self.subTest(msg=f'Проверка ендпоинта calculate с годом {year}'):
+                url: str = '/'.join((self.calculate_url, str(year)))
+                response = self.app.get(url)
+                response_str: str = response.data.decode()
+
+                correct_result: str = f'Траты за {year} равны {sum(self.correct_dict[year].values())}'
+
+                self.assertEqual(response_str, correct_result)
+
+    def test_calculate_with_year_and_month_from_db(self):
+        """Проверка расчета расходов за месяц. Год и месяц имеются в бд"""
+        for year in self.correct_dict.keys():
+            for month in self.correct_dict[year].keys():
+                with self.subTest(msg='Проверка ендпоинта calculate с годом и месяцем'):
+                    url: str = '/'.join((self.calculate_url, str(year), str(month)))
+                    response = self.app.get(url)
+                    response_str: str = response.data.decode()
+                    correct_answer: str = f'Траты за {month} месяц {year} года равны {self.correct_dict[year][month]}'
+
+                    self.assertEqual(response_str, correct_answer)
+
+    def test_calculate_with_year_not_from_db(self):
+        """Проверка расчета расходов за год. В бд нет выбранного года"""
+        years: tuple[int, int, int] = (1000, 5000, 9999)
+
+        for year in years:
+            with self.subTest(msg=f'Проверка ендпоинта calculate с годом {year}'):
+                url: str = '/'.join((self.calculate_url, str(year)))
+                response = self.app.get(url)
+                response_str = response.data.decode()
+                correct_answer: str = f'Траты за {year} равны 0'
+
+                self.assertEqual(response_str, correct_answer)
+
+    def test_calculate_with_year_from_db_and_month_not_from_db(self):
+        """Проверка расчета расходов за месяц. Выбранный год имеется в бд, а месяц - нет"""
+        years = self.correct_dict.keys()
+        months: tuple[int, ...] = (6, 7, 8)
+
+        for year in years:
+            for month in months:
+                with self.subTest(msg=f'Проверка ендпоинта calculate с годом {year} и месяцем {month}'):
+                    url: str = '/'.join((self.calculate_url, str(year), str(month)))
+                    response = self.app.get(url)
+                    response_str: str = response.data.decode()
+                    correct_answer: str = f'Траты за {month} месяц {year} года равны 0'
+
+                    self.assertEqual(response_str, correct_answer)
+
+    def test_calculate_with_year_and_month_not_from_db(self):
+        """Проверка расчета расходов за месяц. Выбранные год и месяц не имеются в бд"""
+        years: tuple[int, ...] = (1000, 5555, 9999)
+        months: tuple[int, ...] = (1, 2, 3, 4, 5)
+
+        for year in years:
+            for month in months:
+                with self.subTest(msg=f'Проверка ендпоинта calculate с годом {year} и месяцем {month}'):
+                    url: str = '/'.join((self.calculate_url, str(year), str(month)))
+                    response = self.app.get(url)
+                    response_str: str = response.data.decode()
+                    correct_answer: str = f'Траты за {month} месяц {year} года равны 0'
+
+                    self.assertEqual(response_str, correct_answer)
