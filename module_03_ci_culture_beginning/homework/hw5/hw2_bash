@@ -1,0 +1,27 @@
+#!/bin/bash
+# Получаем результаты выполнения команд pylint и unittest
+export PYTHONPATH=$PYTHONPATH:~/PycharmProjects/python_advanced
+pylint ../hw2/decrypt.py
+pylint_result=$?
+echo "Результат $pylint_result"
+unittest_result=$(python -m unittest -v module_03_ci_culture_beginning.homework.hw2.test_decrypt)
+
+# Проверяем коды результатов команд
+if [[ unittest_result -eq 0 ]];
+then
+  echo 'unittest_result is OK'
+else
+  echo 'unittest_result is not OK'
+fi
+if [[ pylint_result -eq 0 ]];
+then
+  echo 'pylint_result is OK'
+else
+  echo "pylint_result is not OK. Code is $pylint_result"
+fi
+if [[ pylint_result -eq 0 ]] && [[ unittest_result -eq 0 ]];
+then
+  echo 'OK'
+else
+  echo 'Имеются ошибки'
+fi

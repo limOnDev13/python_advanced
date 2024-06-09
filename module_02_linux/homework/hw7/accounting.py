@@ -13,29 +13,35 @@
 """
 
 from flask import Flask
+from datetime import date
 
 app = Flask(__name__)
 
 storage: dict[int, dict[int, int]] = dict()
 
 
-@app.route("/add/<string:date>/<int:number>")
-def add(date: str, number: int) -> tuple[str, int]:
+@app.route("/add/<string:date_str>/<int:number>")
+def add(date_str: str, number: int) -> tuple[str, int]:
     """
     Функция - эндпоинт. Сохраняет расходы, переданные через url в словарь
-    :param date: Дата в формате YYYYMMDD
-    :type date: str
+    :param date_str: Дата в формате YYYYMMDD
+    :type date_str: str
     :param number: Количество затрат
     :type number: int
     :return: response status
     :rtype: tuple[str, int]
     """
     try:
-        year: int = int(date[:4])
-        month: int = int(date[4: 6])
+        year: int = int(date_str[:4])
+        month: int = int(date_str[4: 6])
+        day: int = int(date_str[6:])
+
+        date(year, month, day)
 
         storage[year][month] = storage.setdefault(year, {}).setdefault(month, 0) + number
         return "Информация сохранена!", 200
+    except ValueError as exc:
+        raise ValueError(exc.__str__())
     except Exception:
         return 'Какая-то ошибка!', 500
 
