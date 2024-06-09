@@ -1,7 +1,15 @@
+"""Модуль дешифровки"""
 import sys
 
 
 def decrypt(encryption: str) -> str:
+    """
+    Функция дешифрует шифровку согласно условию задачи
+    :param encryption: Шифровка
+    :type encryption: str
+    :return: Дешифровку
+    :rtype: str
+    """
     result: list = []
     dots: int = 0
     for symbol in encryption:
