@@ -1,0 +1,17 @@
+test_get_address (test_fixed_person.TestPerson.test_get_address)
+Проверка геттера адреса ... ok
+test_get_age (test_fixed_person.TestPerson.test_get_age)
+Проверка геттера возраста человека ... ok
+test_get_name (test_fixed_person.TestPerson.test_get_name)
+Проверка геттера имени ... ok
+test_is_homeless (test_fixed_person.TestPerson.test_is_homeless)
+Проверка метода is_homeless. Если адрес - пустая строка, метод возвращает False ... ok
+test_set_address (test_fixed_person.TestPerson.test_set_address)
+Проверка сеттера адреса ... ok
+test_set_name (test_fixed_person.TestPerson.test_set_name)
+Проверка сеттера имени ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.024s
+
+OK
