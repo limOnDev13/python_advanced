@@ -23,10 +23,14 @@ def ps() -> tuple[str, int]:
 
     try:
         ps_cmd: Command = Command('ps')
-        ps_result: list[str] = list()
+        ps_result: list[str] = list()  # Здесь будут храниться строки результата выполнения команды ps
 
         def save_result(result) -> None:
-            """Костыль. Пробовал сделать конвейер сразу в переменную uptime_result, но не получилось"""
+            """
+            Функция получает построчно результат выполнения команды ps и добавляет строки в массив
+            :param result: строка результата выполнения команды ps
+            :return: None
+            """
             nonlocal ps_result
             ps_result.append(result)
 

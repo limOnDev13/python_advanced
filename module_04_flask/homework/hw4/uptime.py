@@ -20,16 +20,16 @@ def uptime() -> tuple[str, int]:
     :return:
     """
     uptime_command: Command = Command('uptime')
-    uptime_result: Optional[str] = None
+    uptime_result: list[str] = list()  # здесь будут храниться строки результата работы upotime
 
     def save_result(result) -> None:
-        """Костыль. Пробовал сделать конвейер сразу в переменную uptime_result, но не получилось"""
+        """Функция получает построчно результат команды uptime и сохраняет его"""
         nonlocal uptime_result
-        uptime_result = result
+        uptime_result.append(result)
 
     uptime_command('-p', _out=save_result)
 
-    return f'Время работы системы: {uptime_result}', 200
+    return f'<pre>{"<br>".join(uptime_result)}</pre>', 200
 
 
 if __name__ == '__main__':
