@@ -80,4 +80,30 @@ class TestRegistration(TestCase):
 
                 self.assertEqual(response.status_code, 400)
 
+    def test_input_form_without_name(self):
+        """Негативная проверка ввода формы без имени"""
+        self.correct_form.pop('name')
+        response: Response = self.app.post(self.base_url, data=self.correct_form)
+        correct_answer: str = 'Поле имя обязательно для заполнения!'
+        self.assertEqual(correct_answer, response.data.decode())
 
+    def test_input_form_without_phone(self):
+        """Негативная проверка ввода формы без phone"""
+        self.correct_form.pop('phone')
+        response: Response = self.app.post(self.base_url, data=self.correct_form)
+        correct_answer: str = 'Поле phone обязательно для заполнения!'
+        self.assertEqual(correct_answer, response.data.decode())
+
+    def test_input_form_without_email(self):
+        """Негативная проверка ввода формы без email"""
+        self.correct_form.pop('email')
+        response: Response = self.app.post(self.base_url, data=self.correct_form)
+        correct_answer: str = 'Поле email обязательно для заполнения!'
+        self.assertEqual(correct_answer, response.data.decode())
+
+    def test_input_form_without_address(self):
+        """Негативная проверка ввода формы без address"""
+        self.correct_form.pop('address')
+        response: Response = self.app.post(self.base_url, data=self.correct_form)
+        correct_answer: str = 'Поле address обязательно для заполнения!'
+        self.assertEqual(correct_answer, response.data.decode())
