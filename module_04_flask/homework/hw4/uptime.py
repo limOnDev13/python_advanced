@@ -6,7 +6,7 @@
 """
 
 from flask import Flask
-from sh import Command, RunningCommand
+from sh import Command
 from typing import Optional
 
 
