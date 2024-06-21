@@ -9,36 +9,24 @@
 """
 
 from flask import Flask, request
-from sh import Command, ErrorReturnCode
-from typing import Optional
+import subprocess
+from subprocess import CompletedProcess
+import shlex
 
 app = Flask(__name__)
 
 
 @app.route("/ps", methods=["GET"])
-def ps() -> tuple[str, int]:
+def _ps() -> tuple[str, int]:
     """Функция - эндпоинт. Получает список аргументов для командной строки и возвращает результат работы команды
      ps с этими аргументами"""
     args: list[str] = request.args.getlist('arg')
 
-    try:
-        ps_cmd: Command = Command('ps')
-        ps_result: list[str] = list()  # Здесь будут храниться строки результата выполнения команды ps
-
-        def save_result(result) -> None:
-            """
-            Функция получает построчно результат выполнения команды ps и добавляет строки в массив
-            :param result: строка результата выполнения команды ps
-            :return: None
-            """
-            nonlocal ps_result
-            ps_result.append(result)
-
-        ps_cmd(*args, _out=save_result)
-
-        return f'<pre>{"<br>".join(ps_result)}</pre>', 200
-    except ErrorReturnCode:
-        return 'Переданы неправильные параметры!', 400
+    command_str: str = 'ps ' + ' '.join(shlex.quote(arg) for arg in args)
+    command: list[str] = shlex.split(command_str)
+    ps: CompletedProcess = subprocess.run(command, capture_output=True)
+    processes: str = ps.stdout.decode()
+    return f'<pre>{processes}</pre>', 200
 
 
 if __name__ == "__main__":
