@@ -1,0 +1,4 @@
+ * Serving Flask app 'simple_app'
+ * Debug mode: off
+ * Serving Flask app 'simple_app'
+ * Debug mode: off
