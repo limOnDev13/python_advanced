@@ -11,6 +11,10 @@
 она должна найти процесс по этому порту, завершить его и попытаться запустить сервер ещё раз.
 """
 from typing import List
+import subprocess
+from subprocess import Popen
+import shlex
+import time
 
 from flask import Flask
 
@@ -26,8 +30,16 @@ def get_pids(port: int) -> List[int]:
     if not isinstance(port, int):
         raise ValueError
 
-    pids: List[int] = []
-    ...
+    command_line: str = f'lsof -i :{port}'
+    command: list[str] = shlex.split(command_line)
+    processes_on_port_info = subprocess.run(command, capture_output=True).stdout.decode()
+
+    # Распарсим результат
+    processes_on_port: list[str] = processes_on_port_info.split('\n')[1:-1]
+
+    pids: list[int] = [int(process_info[1]) for process_info in
+                       [line.split() for line in processes_on_port]]
+
     return pids
 
 
@@ -37,7 +49,11 @@ def free_port(port: int) -> None:
     @param port: порт
     """
     pids: List[int] = get_pids(port)
-    ...
+
+    processes: list[Popen] = [Popen(shlex.split(f'kill {pid}')) for pid in pids]
+
+    for proc in processes:
+        proc.wait()
 
 
 def run(port: int) -> None:
@@ -47,6 +63,7 @@ def run(port: int) -> None:
     @param port: порт
     """
     free_port(port)
+    time.sleep(1)
     app.run(port=port)
 
 
