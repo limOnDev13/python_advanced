@@ -42,6 +42,14 @@ class TestCalculate(TestCase):
         with self.assertRaises(OverflowError):
             self.app.post(self.url, data=self.correct_form)
 
+    # def test_raising_OverflowError(self):
+    #     """Негативная проверка выбрасывания ArithmeticError"""
+    #     OverflowError_formula: str = 'raise ArithmeticError'
+    #     self.correct_form['formula'] = OverflowError_formula
+    #
+    #     with self.assertRaises(ArithmeticError):
+    #         self.app.post(self.url, data=self.correct_form)
+
 
 if __name__ == '__main__':
     unittest.main()
