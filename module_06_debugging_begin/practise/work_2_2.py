@@ -32,18 +32,27 @@ def bank_api(branch: str, person_id: int):
             return "Person not found", 404
 
 
+def write_message(message: str, file_name: str = 'invalid_error.log'):
+    """
+    Функция записывает сообщение в файл
+    :param message: Сообщение
+    :type message: str
+    :param file_name: Имя файла
+    :type file_name: str
+    :return: None
+    """
+    with open(file_name, 'a', encoding='utf-8') as file:
+        file.write(message)
+
+
 @app.errorhandler(InternalServerError)
 def handle_exception(e: InternalServerError):
     original: Optional[Exception] = getattr(e, "original_exception", None)
 
     if isinstance(original, FileNotFoundError):
-        with open("invalid_error.log", "a") as fo:
-            fo.write(
-                    f"Tried to access {original.filename}. Exception info: {original.strerror}\n"
-            )
+        write_message(f"Tried to access {original.filename}. Exception info: {original.strerror}\n")
     elif isinstance(original, OSError):
-        with open("invalid_error.log", "a") as fo:
-            fo.write(f"Unable to access a card. Exception info: {original.strerror}\n")
+        write_message(f"Unable to access a card. Exception info: {original.strerror}\n")
 
     return "Internal server error", 500
 
