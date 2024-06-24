@@ -41,7 +41,18 @@ def input_and_check_password():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
     logger.info("Вы пытаетесь аутентифицироваться в Skillbox")
-    count_number: int = 3
+    count_number: int = 0
+
+    while True:
+        try:
+            count_number = int(input('Сколько раз вы хотите вводит пароль? (минимум - 2, максимум - 10) '))
+
+            if not 2 <= count_number <= 10:
+                raise ValueError
+        except ValueError:
+            logger.warning('Пожалуйста, введите число от 2 до 10!')
+        else:
+            break
     logger.info(f"У вас есть {count_number} попыток")
 
     while count_number > 0:
