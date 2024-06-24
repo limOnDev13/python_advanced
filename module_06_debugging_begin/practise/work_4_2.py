@@ -13,7 +13,8 @@ timsort (стандартная сортировка python) и сортиров
 import heapq
 import json
 import logging
-from typing import List
+import time
+from typing import List, Callable, Any
 
 from flask import Flask, request
 
@@ -22,6 +23,20 @@ app = Flask(__name__)
 logger = logging.getLogger("sort")
 
 
+def logging_time(func: Callable) -> Callable:
+    def wrapper(*args, **kwargs) -> Any:
+        logger.info(f'Началась сортировка {func.__name__}.')
+        start_time: float = time.time()
+        result = func(*args, **kwargs)
+        logger.info('Время работы сортировки {algorithm}: {time:.5e}'.format(
+            algorithm=func.__name__,
+            time=time.time() - start_time
+        ))
+        return result
+    return wrapper
+
+
+@logging_time
 def bubble_sort(array: List[int]) -> List[int]:
     n = len(array)
 
@@ -33,12 +48,14 @@ def bubble_sort(array: List[int]) -> List[int]:
     return array
 
 
+@logging_time
 def tim_sort(array: List[int]) -> List[int]:
     array.sort()
 
     return array
 
 
+@logging_time
 def heap_sort(array: List[int]) -> List[int]:
     data = []
 
@@ -64,7 +81,7 @@ def sort_endpoint(algorithm_name: str):
 
     array = json.loads(form_data)
 
-    result = algorithms[algorithm_name](array)
+    result = algorithms[algorithm_name](array['array'])
 
     return json.dumps(result)
 
