@@ -4,3 +4,7 @@ DEBUG:__main__:"\u0415\u0449\u0435 \u043e\u0434\u043d\u043e \u0441\u043e\u043e\u
 INFO:__main__:Сообщение
 ERROR:__main__:Кавычка)"
 DEBUG:__main__:Еще одно сообщение
+INFO:__main__:Сообщение
+ERROR:__main__:Кавычка)"
+DEBUG:__main__:Еще одно сообщение
+
