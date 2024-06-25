@@ -26,16 +26,19 @@ logger.info('Сообщение')
 """
 
 import logging
+import json
 
 
 class JsonAdapter(logging.LoggerAdapter):
     def process(self, msg, kwargs):
-        new_message = msg
-        return new_message, kwargs
+        """Изменение сообщение под формат json"""
+        new_message = json.dumps(msg)
+        return json.loads(new_message), kwargs
 
 
 if __name__ == '__main__':
     logger = JsonAdapter(logging.getLogger(__name__))
+    logging.basicConfig(filename='json_log.txt', filemode='a')
     logger.setLevel(logging.DEBUG)
     logger.info('Сообщение')
     logger.error('Кавычка)"')
