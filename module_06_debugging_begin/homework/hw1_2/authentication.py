@@ -41,7 +41,7 @@ def load_english_words() -> None:
         with open(file_with_words, 'r', encoding='utf-8') as file:
             for word in file:
                 if len(word) > 4:
-                    ENGLISH_WORDS.add(word)
+                    ENGLISH_WORDS.add(word.rstrip().lower())
 
 
 def is_strong_password(password: str) -> bool:
@@ -56,7 +56,7 @@ def is_strong_password(password: str) -> bool:
     global ENGLISH_WORDS
 
     for word in ENGLISH_WORDS:
-        if re.search(fr'{word.rstrip().lower()}', password.lower()):
+        if re.search(fr'{word}', password.lower()):
             logger.debug('Нашли английское слово')
             return False
     return True
