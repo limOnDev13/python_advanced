@@ -9,6 +9,7 @@ import functools
 from flask import Flask
 from typing import Callable, Any
 from werkzeug.exceptions import NotFound
+import re
 
 app = Flask(__name__)
 URLS: list[str] = list()
@@ -18,7 +19,13 @@ BASE_URL: str = 'http://localhost:5000'  # Пока не понял, как по
 def save_url(func: Callable) -> Callable:
     @functools.wraps(func)
     def wrapper(url, **kwargs) -> Any:
-        URLS.append(f'<a href>{BASE_URL}{url}</a>')  # ссылки подсвечиваются, но почему-то не работают
+        # Обработаем ссылку с параметром и сохраним ее
+        if re.search(r'<.*>', url):
+            url_with_int_param = re.sub(r'<.*>', '1', url)
+            URLS.append(f'<a href={BASE_URL}{url_with_int_param}>{url_with_int_param}</a>')
+        # сохраним все остальные ссылки
+        else:
+            URLS.append(f'<a href={BASE_URL}{url}>{url}</a>')  # ссылки подсвечиваются, но почему-то не работают
         return func(url, **kwargs)
     return wrapper
 
