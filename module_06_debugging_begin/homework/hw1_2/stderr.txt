@@ -1,0 +1,137 @@
+08:21:03 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+08:21:03 | INFO | У вас есть 3 попыток
+08:21:05 | WARNING | Вы ввели слишком слабый пароль
+08:21:05 | WARNING | Вы ввели пустой пароль.
+08:21:06 | WARNING | Вы ввели слишком слабый пароль
+08:21:06 | ERROR | Пользователь трижды ввёл не правильный пароль!
+08:31:15 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+08:31:18 | INFO | У вас есть 3 попыток
+08:58:16 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+08:58:16 | INFO | У вас есть 3 попыток
+08:58:25 | WARNING | Вы ввели слишком слабый пароль
+08:58:43 | WARNING | Вы ввели слишком слабый пароль
+08:58:48 | WARNING | Вы ввели слишком слабый пароль
+08:58:48 | ERROR | Пользователь трижды ввёл не правильный пароль!
+09:00:53 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:00:53 | INFO | У вас есть 3 попыток
+09:00:53 | DEBUG | Начало input_and_check_password
+09:00:55 | DEBUG | Загружаем слова
+09:00:56 | DEBUG | Начало input_and_check_password
+09:01:05 | DEBUG | Начало input_and_check_password
+09:01:18 | ERROR | Пользователь трижды ввёл не правильный пароль!
+09:02:04 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:02:04 | INFO | У вас есть 3 попыток
+09:02:04 | DEBUG | Начало input_and_check_password
+09:02:09 | DEBUG | Загружаем слова
+09:02:12 | DEBUG | Начало input_and_check_password
+09:02:18 | DEBUG | Начало input_and_check_password
+09:02:24 | ERROR | Пользователь трижды ввёл не правильный пароль!
+09:05:57 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:05:57 | INFO | У вас есть 3 попыток
+09:05:57 | DEBUG | Начало input_and_check_password
+09:06:02 | DEBUG | Загружаем слова
+09:06:04 | DEBUG | Начало input_and_check_password
+09:06:12 | DEBUG | Начало input_and_check_password
+09:06:29 | ERROR | Пользователь трижды ввёл не правильный пароль!
+09:07:07 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:07:07 | INFO | У вас есть 3 попыток
+09:07:07 | DEBUG | Начало input_and_check_password
+09:07:15 | DEBUG | Загружаем слова
+09:07:19 | DEBUG | Начало input_and_check_password
+09:08:50 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:08:50 | INFO | У вас есть 3 попыток
+09:08:50 | DEBUG | Начало input_and_check_password
+09:09:00 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+09:09:00 | INFO | У вас есть 3 попыток
+09:09:00 | DEBUG | Начало input_and_check_password
+09:09:04 | DEBUG | Загружаем слова
+09:09:05 | DEBUG | Нашли английское слово
+09:09:05 | WARNING | Вы ввели слишком слабый пароль
+09:09:05 | DEBUG | Начало input_and_check_password
+09:09:08 | DEBUG | Нашли английское слово
+09:09:08 | WARNING | Вы ввели слишком слабый пароль
+09:09:08 | DEBUG | Начало input_and_check_password
+09:09:12 | DEBUG | Нашли английское слово
+09:09:12 | WARNING | Вы ввели слишком слабый пароль
+09:09:12 | ERROR | Пользователь трижды ввёл не правильный пароль!
+14:45:03 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+14:45:03 | INFO | У вас есть 3 попыток
+14:45:03 | DEBUG | Начало input_and_check_password
+14:45:07 | DEBUG | Загружаем слова
+14:45:07 | DEBUG | Нашли английское слово
+14:45:07 | WARNING | Вы ввели слишком слабый пароль
+14:45:07 | DEBUG | Начало input_and_check_password
+14:45:14 | DEBUG | Нашли английское слово
+14:45:14 | WARNING | Вы ввели слишком слабый пароль
+14:45:14 | DEBUG | Начало input_and_check_password
+14:45:23 | DEBUG | Нашли английское слово
+14:45:23 | WARNING | Вы ввели слишком слабый пароль
+14:45:23 | ERROR | Пользователь трижды ввёл не правильный пароль!
+14:45:32 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+14:45:32 | INFO | У вас есть 3 попыток
+14:45:32 | DEBUG | Начало input_and_check_password
+14:45:34 | DEBUG | Загружаем слова
+14:45:35 | DEBUG | Начало input_and_check_password
+14:45:39 | DEBUG | Начало input_and_check_password
+14:45:44 | DEBUG | Нашли английское слово
+14:45:44 | WARNING | Вы ввели слишком слабый пароль
+14:45:44 | ERROR | Пользователь трижды ввёл не правильный пароль!
+18:30:51 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+18:30:51 | INFO | У вас есть 3 попыток
+18:30:51 | DEBUG | Начало input_and_check_password
+18:30:56 | DEBUG | Загружаем слова
+18:30:56 | DEBUG | Начало input_and_check_password
+18:31:01 | DEBUG | Начало input_and_check_password
+18:31:05 | ERROR | Пользователь трижды ввёл не правильный пароль!
+18:31:45 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+18:31:45 | INFO | У вас есть 3 попыток
+18:31:45 | DEBUG | Начало input_and_check_password
+18:31:50 | DEBUG | Загружаем слова
+18:31:50 | ERROR | Вы ввели некорректный символ 
+Traceback (most recent call last):
+  File "/home/vladimir/PycharmProjects/python_advanced/module_06_debugging_begin/homework/hw1_2/authentication.py", line 79, in input_and_check_password
+    hasher.update(password.encode("latin-1"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 0-9: ordinal not in range(256)
+18:31:50 | DEBUG | Начало input_and_check_password
+18:31:53 | ERROR | Вы ввели некорректный символ 
+Traceback (most recent call last):
+  File "/home/vladimir/PycharmProjects/python_advanced/module_06_debugging_begin/homework/hw1_2/authentication.py", line 79, in input_and_check_password
+    hasher.update(password.encode("latin-1"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 0-5: ordinal not in range(256)
+18:31:53 | DEBUG | Начало input_and_check_password
+18:31:56 | ERROR | Вы ввели некорректный символ 
+Traceback (most recent call last):
+  File "/home/vladimir/PycharmProjects/python_advanced/module_06_debugging_begin/homework/hw1_2/authentication.py", line 79, in input_and_check_password
+    hasher.update(password.encode("latin-1"))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'latin-1' codec can't encode characters in position 0-7: ordinal not in range(256)
+18:31:56 | ERROR | Пользователь трижды ввёл не правильный пароль!
+18:32:13 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+18:32:13 | INFO | У вас есть 3 попыток
+18:32:13 | DEBUG | Начало input_and_check_password
+18:32:16 | DEBUG | Загружаем слова
+18:32:16 | DEBUG | Начало input_and_check_password
+18:32:22 | DEBUG | Начало input_and_check_password
+18:32:25 | ERROR | Пользователь трижды ввёл не правильный пароль!
+18:33:14 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+18:33:14 | INFO | У вас есть 3 попыток
+18:33:14 | DEBUG | Начало input_and_check_password
+18:33:17 | DEBUG | Загружаем слова
+18:33:17 | DEBUG | Начало input_and_check_password
+18:33:25 | DEBUG | Начало input_and_check_password
+18:33:28 | ERROR | Пользователь трижды ввёл не правильный пароль!
+18:34:32 | INFO | Вы пытаетесь аутентифицироваться в Skillbox
+18:34:32 | INFO | У вас есть 3 попыток
+18:34:32 | DEBUG | Начало input_and_check_password
+18:34:34 | DEBUG | Загружаем слова
+18:34:34 | DEBUG | Нашли английское слово
+18:34:34 | WARNING | Вы ввели слишком слабый пароль
+18:34:34 | DEBUG | Начало input_and_check_password
+18:34:37 | DEBUG | Нашли английское слово
+18:34:37 | WARNING | Вы ввели слишком слабый пароль
+18:34:37 | DEBUG | Начало input_and_check_password
+18:34:39 | DEBUG | Нашли английское слово
+18:34:39 | WARNING | Вы ввели слишком слабый пароль
+18:34:39 | ERROR | Пользователь трижды ввёл не правильный пароль!
