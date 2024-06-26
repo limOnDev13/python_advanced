@@ -132,7 +132,7 @@ def restore_tree(path_to_log_file: str) -> BinaryTreeNode:
         root_value = get_value_branch(lines[0], 'INFO')
 
         # Одновременно просмотрим три последовательные строки
-        for line_num in range(len(lines) - 2):  # Чтобы не выйти за границы и не зацепить последнюю пустую строку
+        for line_num in range(len(lines) - 2):  # Чтобы не выйти за границы
             # нас интересуют только INFO логи, DEBUG логи будут автоматически просматриваться
             if 'INFO' in lines[line_num]:
                 # Получим значение на родительской ветке
