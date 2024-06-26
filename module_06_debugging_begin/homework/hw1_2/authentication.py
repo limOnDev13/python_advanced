@@ -55,10 +55,10 @@ def is_strong_password(password: str) -> bool:
     load_english_words()
     global ENGLISH_WORDS
 
-    for word in ENGLISH_WORDS:
-        if re.search(fr'{word}', password.lower()):
-            logger.debug('Нашли английское слово')
-            return False
+    words_in_password: set[list[str]] = set(re.findall('[a-z]', password, flags=re.IGNORECASE))
+    if words_in_password & ENGLISH_WORDS != {}:
+        logger.debug('Нашли английское слово')
+        return False
     return True
 
 
