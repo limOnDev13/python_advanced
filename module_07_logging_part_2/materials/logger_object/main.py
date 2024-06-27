@@ -3,10 +3,22 @@ import flask
 
 from http_utils import get_ip_address
 from subprocess_utils import get_kernel_version
+import http_utils
+import subprocess_utils
 
 
 logging.basicConfig(level='DEBUG')
-logger = logging.getLogger('main')
+main_logger = logging.getLogger('main')
+main_logger.setLevel('INFO')
+utils_logger = logging.getLogger('utils')
+utils_logger.setLevel('DEBUG')
+print(http_utils.logger)
+print(http_utils.logger.parent)
+print(http_utils.logger.parent.parent)
+print(subprocess_utils.logger)
+print(subprocess_utils.logger.parent)
+print(subprocess_utils.logger.parent.parent)
+
 
 app = flask.Flask(__name__)
 
