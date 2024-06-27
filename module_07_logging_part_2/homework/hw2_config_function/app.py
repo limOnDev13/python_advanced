@@ -9,7 +9,9 @@ formatter = logging.Formatter(fmt='%(levelname)s | %(name)s | %(asctime)s | %(li
 handler = logging.StreamHandler()
 handler.stream = sys.stdout
 handler.setFormatter(formatter)
+handler.setLevel('DEBUG')
 app_logger.addHandler(handler)
+app_logger.setLevel('DEBUG')
 
 # logging.config.dictConfig(dict_config)
 
@@ -47,9 +49,5 @@ def calc(args):
 
 
 if __name__ == '__main__':
-    logging.basicConfig(
-        stream=sys.stdout,
-        level='DEBUG'
-    )
     # calc(sys.argv[1:])
     calc('2+3')
