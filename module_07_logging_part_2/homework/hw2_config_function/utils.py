@@ -9,7 +9,9 @@ utils_logger = logging.getLogger('utils')
 formatter = logging.Formatter(fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s')
 handler = logging.StreamHandler()
 handler.setFormatter(formatter)
+handler.setLevel('DEBUG')
 utils_logger.addHandler(handler)
+utils_logger.setLevel('DEBUG')
 # logging.config.dictConfig(dict_config)
 
 
