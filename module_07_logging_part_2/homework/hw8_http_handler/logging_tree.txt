@@ -1,0 +1,21 @@
+<--""
+   Level WARNING
+   |
+   o<--"app"
+   |   Level DEBUG
+   |   Filter <logger_helper.ASCIIFilter object at 0x00000186B55B8650>
+   |   Handler <LevelFileHandler (DEBUG)>
+   |     Level DEBUG
+   |     Formatter fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s' datefmt=None
+   |   Handler HTTP POST to http://localhost:5000//log
+   |
+   o<--"utils"
+       Level DEBUG
+       Filter <logger_helper.ASCIIFilter object at 0x00000186B5385C40>
+       Handler <LevelFileHandler (DEBUG)>
+         Level DEBUG
+         Formatter fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s' datefmt=None
+       Handler TimedRotatingFile 'C:\\Users\\Vladimir\\PycharmProjects\\python_advanced\\module_07_logging_part_2\\homework\\hw8_http_handler\\utils.log' when='H' interval=36000 backupCount=3
+         Level INFO
+         Formatter fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s' datefmt=None
+       Handler HTTP POST to http://localhost:5000//log
