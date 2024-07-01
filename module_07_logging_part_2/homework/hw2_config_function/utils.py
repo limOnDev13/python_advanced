@@ -1,11 +1,18 @@
 from typing import Union, Callable
 from operator import sub, mul, truediv, add
-import logging.config
-from logging_config import dict_config
+import logging
+# import logging.config
+# from logging_config import dict_config
 
 
 utils_logger = logging.getLogger('utils')
-logging.config.dictConfig(dict_config)
+formatter = logging.Formatter(fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s')
+handler = logging.StreamHandler()
+handler.setFormatter(formatter)
+handler.setLevel('DEBUG')
+utils_logger.addHandler(handler)
+utils_logger.setLevel('DEBUG')
+# logging.config.dictConfig(dict_config)
 
 
 OPERATORS = {

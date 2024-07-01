@@ -5,7 +5,7 @@ import shlex
 
 KERNEL_VERSION = None
 
-logger = logging.getLogger('subprocess_utils')
+logger = logging.getLogger('utils.subprocess_utils')
 
 
 def get_kernel_version() -> str:

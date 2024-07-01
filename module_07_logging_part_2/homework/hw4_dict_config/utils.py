@@ -1,11 +1,9 @@
+from logger_helper import get_logger
 from typing import Union, Callable
 from operator import sub, mul, truediv, add
-import logging.config
-from logging_config import dict_config
 
 
-utils_logger = logging.getLogger('utils')
-logging.config.dictConfig(dict_config)
+utils_logger = get_logger('utils')
 
 
 OPERATORS = {
