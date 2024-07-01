@@ -1,11 +1,8 @@
-import sys
+from logger_helper import get_logger
 from utils import string_to_operator
-import logging.config
-from logging_config import dict_config
 
 
-app_logger = logging.getLogger('app')
-logging.config.dictConfig(dict_config)
+app_logger = get_logger('app')
 
 
 def calc(args):
@@ -43,5 +40,3 @@ def calc(args):
 if __name__ == '__main__':
     # calc(sys.argv[1:])
     calc('2+3')
-    calc([1, '+', 'dfg'])
-    calc([1, '=', 2])

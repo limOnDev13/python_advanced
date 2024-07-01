@@ -1,11 +1,19 @@
 import sys
 from utils import string_to_operator
 import logging.config
-from logging_config import dict_config
+# from logging_config import dict_config
 
 
 app_logger = logging.getLogger('app')
-logging.config.dictConfig(dict_config)
+formatter = logging.Formatter(fmt='%(levelname)s | %(name)s | %(asctime)s | %(lineno)d | %(message)s')
+handler = logging.StreamHandler()
+handler.stream = sys.stdout
+handler.setFormatter(formatter)
+handler.setLevel('DEBUG')
+app_logger.addHandler(handler)
+app_logger.setLevel('DEBUG')
+
+# logging.config.dictConfig(dict_config)
 
 
 def calc(args):
@@ -43,5 +51,3 @@ def calc(args):
 if __name__ == '__main__':
     # calc(sys.argv[1:])
     calc('2+3')
-    calc([1, '+', 'dfg'])
-    calc([1, '=', 2])

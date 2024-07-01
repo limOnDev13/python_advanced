@@ -1,11 +1,14 @@
-import sys
+from logger_helper import get_logger
 from utils import string_to_operator
 import logging.config
 from logging_config import dict_config
+import logging_tree
 
 
-app_logger = logging.getLogger('app')
 logging.config.dictConfig(dict_config)
+
+
+app_logger = get_logger('app')
 
 
 def calc(args):
@@ -41,7 +44,10 @@ def calc(args):
 
 
 if __name__ == '__main__':
+    # Соберем дерево логгеров
+    with open('logging_tree.txt', 'w', encoding='utf-8') as tree_file:
+        tree_file.write(logging_tree.format.build_description())
+
     # calc(sys.argv[1:])
     calc('2+3')
-    calc([1, '+', 'dfg'])
-    calc([1, '=', 2])
+    calc('2==3')
