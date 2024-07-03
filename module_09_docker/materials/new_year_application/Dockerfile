@@ -1,3 +1,5 @@
+# My repository: https://hub.docker.com/r/vladimir1303/new_year_application
+
 FROM python:latest
 
 COPY requirements.txt /app/
