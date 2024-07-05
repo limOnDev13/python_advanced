@@ -20,20 +20,15 @@ class Philosopher(threading.Thread):
         while self.running:
             logger.info(f'Philosopher {self.name} start thinking.')
             time.sleep(random.randint(1, 10))
+
             logger.info(f'Philosopher {self.name} is hungry.')
-            try:
-                self.left_fork.acquire()
+            with self.left_fork:
                 logger.info(f'Philosopher {self.name} acquired left fork')
                 if self.right_fork.locked():
                     continue
-                try:
-                    self.right_fork.acquire()
+                with self.right_fork:
                     logger.info(f'Philosopher {self.name} acquired right fork')
                     self.dining()
-                finally:
-                    self.right_fork.release()
-            finally:
-                self.left_fork.release()
 
     def dining(self) -> None:
         logger.info(f'Philosopher {self.name} starts eating.')
