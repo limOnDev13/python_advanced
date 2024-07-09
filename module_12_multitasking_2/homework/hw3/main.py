@@ -1,7 +1,8 @@
 import threading
 from threading import Semaphore, Thread
 import time
-from typing import Callable
+import signal
+import sys
 
 
 def custom_exception_hook(args):
@@ -10,32 +11,53 @@ def custom_exception_hook(args):
 
 threading.excepthook = custom_exception_hook
 sem: Semaphore = Semaphore()
+RUNNING: bool = True
 
 
 def fun1():
-    while True:
+    global RUNNING
+    while RUNNING:
         sem.acquire()
-        print(1)
-        sem.release()
+        try:
+            print(1)
+        finally:
+            sem.release()
         time.sleep(0.25)
 
 
 def fun2():
-    while True:
+    global RUNNING
+    while RUNNING:
         sem.acquire()
-        print(2)
-        sem.release()
+        try:
+            print(2)
+        finally:
+            sem.release()
         time.sleep(0.25)
 
 
+def signal_handler(sig, frame):
+    global RUNNING
+    RUNNING = False
+    print('Получен KeyboardInterrupt')
+
+
+signal.signal(signal.SIGINT, signal_handler)
+
 t1: Thread = Thread(target=fun1)
 t2: Thread = Thread(target=fun2)
-t1.daemon = False
-t2.daemon = False
+
+t1.start()
+t2.start()
 
 try:
-    t1.start()
-    t2.start()
+    while t1.is_alive() or t2.is_alive():
+        t1.join(timeout=1)
+        t2.join(timeout=1)
 except KeyboardInterrupt:
-    print('\nReceived keyboard interrupt, quitting threads.')
-    exit(1)
+    RUNNING = False
+
+    t1.join()
+    t2.join()
+    print('Почему-то эта строчка не выводится. Зачем тогда нужен блок try - except?')
+print('Но эта строчка выводится...')   # обязательно прочитать в инете почему
