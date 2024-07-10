@@ -14,8 +14,8 @@ def register(username: str, password: str) -> None:
 
 
 def hack() -> None:
-    username: str = "I like"
-    password: str = "SQL Injection"
+    username: str = "Лунная призма, дай мне силу хацкера!"
+    password: str = "'); DROP TABLE `table_users`; -- "
     register(username, password)
 
 
