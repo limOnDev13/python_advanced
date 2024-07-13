@@ -73,3 +73,16 @@ def get_author_books(author: str) -> List[Book]:
             """, (author,)
         )
         return [Book(*row) for row in cursor.fetchall()]
+
+
+def get_number_books() -> int:
+    """Функция возвращает количество книг в бд"""
+    with sqlite3.connect('table_books.db') as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT COUNT(*) FROM `table_books`
+            """
+        )
+        number_books, *_ = cursor.fetchone()
+        return number_books
