@@ -1,7 +1,7 @@
 from flask import Flask, render_template
 from typing import List
 
-from models import init_db, get_all_books, DATA, get_author_books
+from models import init_db, get_all_books, DATA, get_author_books, get_number_books
 
 app: Flask = Flask(__name__)
 
@@ -34,6 +34,7 @@ def all_books() -> str:
     return render_template(
         'index.html',
         books=get_all_books(),
+        number_books=get_number_books()
     )
 
 
@@ -41,7 +42,8 @@ def all_books() -> str:
 def author_books(author: str) -> str:
     return render_template(
         'index.html',
-        books=get_author_books(author)
+        books=get_author_books(author),
+        number_books=get_number_books()
     )
 
 
