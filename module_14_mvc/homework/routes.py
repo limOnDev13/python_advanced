@@ -1,7 +1,8 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from typing import List
 
 from models import init_db, get_all_books, DATA
+import models
 
 app: Flask = Flask(__name__)
 
@@ -37,8 +38,11 @@ def all_books() -> str:
     )
 
 
-@app.route('/books/form')
+@app.route('/books/form', methods=['GET', 'POST'])
 def get_books_form() -> str:
+    if request.method == 'POST':
+        models.add_new_book(request.form['book_title'], request.form['author_name'])
+        return 'Книга добавлена в базу данных!<br><a href="http://localhost:5000/books">Список всех книг</a>'
     return render_template('add_book.html')
 
 

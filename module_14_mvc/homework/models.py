@@ -61,3 +61,15 @@ def get_all_books() -> List[Book]:
             """
         )
         return [Book(*row) for row in cursor.fetchall()]
+
+
+def add_new_book(title: str, author: str) -> None:
+    """Функция добавляет новую книгу в бд"""
+    with sqlite3.connect('table_books.db') as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            """
+            INSERT INTO table_books (title, author) VALUES (?, ?)
+            """, (title, author)
+        )
+        conn.commit()
