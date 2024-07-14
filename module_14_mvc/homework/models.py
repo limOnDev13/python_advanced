@@ -36,7 +36,7 @@ def init_db(initial_records: List[dict]) -> None:
                 CREATE TABLE `table_books` (
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     title TEXT, 
-                    author TEXT, 
+                    author TEXT
                 )
                 """
             )
