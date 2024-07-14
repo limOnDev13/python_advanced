@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from flask_wtf import FlaskForm
 from wtforms import StringField
 from wtforms.validators import InputRequired
-from typing import List
+from typing import List, Optional
 
 from models import init_db, get_all_books, DATA
 import models
@@ -38,11 +38,19 @@ def _get_html_table_for_books(books: List[dict]) -> str:
     return table.format(books_rows=rows)
 
 
-@app.route('/books')
+@app.route('/books', methods=['GET'])
 def all_books() -> str:
+    """Функция - эндпоинт. Показывает таблицу книг. Если указать автора в GET-запросе (по ключ. слову 'author'),
+    то покажет таблицу книг этого автора в бд"""
+    author: Optional[str] = request.args.get('author', type=str, default=None)
+    if author is None:
+        return render_template(
+            'index.html',
+            books=get_all_books(),
+        )
     return render_template(
         'index.html',
-        books=get_all_books(),
+        books=models.get_author_books(author)
     )
 
 

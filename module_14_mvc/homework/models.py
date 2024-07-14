@@ -73,3 +73,15 @@ def add_new_book(title: str, author: str) -> None:
             """, (title, author)
         )
         conn.commit()
+
+
+def get_author_books(author: str) -> List[Book]:
+    """Функция возвращает список книг автора из бд"""
+    with sqlite3.connect('table_books.db') as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT * FROM table_books WHERE author = ?
+            """, (author,)
+        )
+        return [Book(*row) for row in cursor.fetchall()]
