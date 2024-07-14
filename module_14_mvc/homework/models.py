@@ -10,10 +10,11 @@ DATA: List[dict] = [
 
 class Book:
 
-    def __init__(self, id: int, title: str, author: str) -> None:
+    def __init__(self, id: int, title: str, author: str, number_views: int) -> None:
         self.id: int = id
         self.title: str = title
         self.author: str = author
+        self.number_views: int = number_views
 
     def __getitem__(self, item: str) -> Any:
         return getattr(self, item)
@@ -36,7 +37,8 @@ def init_db(initial_records: List[dict]) -> None:
                 CREATE TABLE `table_books` (
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     title TEXT, 
-                    author TEXT
+                    author TEXT,
+                    number_views INTEGER DEFAULT 0
                 )
                 """
             )
@@ -52,6 +54,45 @@ def init_db(initial_records: List[dict]) -> None:
             )
 
 
+def delete_table() -> None:
+    """Функция удаляет страницу"""
+    with sqlite3.connect('table_books.db') as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.executescript(
+            """
+            DROP TABLE IF EXISTS table_books
+            """
+        )
+
+
+def update_table_books(initial_records: list[dict]) -> None:
+    """Фнкция удаляет таблицу и создает новую"""
+    delete_table()
+    init_db(initial_records=initial_records)
+
+
+def increase_number_views(cursor: sqlite3.Cursor, book_ids: list[int]):
+    """Функция увеличивает количество просмотров (number_views) книг по id из списка ids на единицу при каждом вызове.
+    """
+    for book_id in book_ids:
+        book_id = int(book_id)
+
+        # Проверим, что данный id есть в бд
+        cursor.execute(
+            """
+            SELECT EXISTS(SELECT id FROM table_books WHERE id = ?)
+            """, (book_id,)
+        )
+        if cursor.fetchone()[0]:
+            cursor.execute(
+                """
+                UPDATE table_books
+                SET number_views = number_views + 1
+                WHERE id = ?
+                """, (book_id,)
+            )
+
+
 def get_all_books() -> List[Book]:
     with sqlite3.connect('table_books.db') as conn:
         cursor: sqlite3.Cursor = conn.cursor()
@@ -60,7 +101,12 @@ def get_all_books() -> List[Book]:
             SELECT * from `table_books`
             """
         )
-        return [Book(*row) for row in cursor.fetchall()]
+        # После получения списка обновим количество просмотров у каждой книги. Так обновление происходит после
+        # просмотра, то появляется небольшой рассинхрон - пользователь видит количество просмотров, не учитывая текущий
+        # просмотр
+        results = cursor.fetchall()
+        increase_number_views(cursor, [row[0] for row in results])
+        return [Book(*row) for row in results]
 
 
 def add_new_book(title: str, author: str) -> None:
@@ -84,4 +130,26 @@ def get_author_books(author: str) -> List[Book]:
             SELECT * FROM table_books WHERE author = ?
             """, (author,)
         )
-        return [Book(*row) for row in cursor.fetchall()]
+
+        # Обновим данные о просмотрах
+        results = cursor.fetchall()
+        increase_number_views(cursor, [row[0] for row in results])
+        return [Book(*row) for row in results]
+
+
+def get_book_with_id(book_id: int) -> List[Book]:
+    """Функция возвращает книгу по индексу. Возвращает ее в формате List[Book], чтобы воспользоваться index.html"""
+    with sqlite3.connect('table_books.db') as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            """
+            SELECT * FROM table_books WHERE id = ?
+            """, (book_id,)
+        )
+
+        result = cursor.fetchone()
+        if not result:
+            return []
+        else:
+            increase_number_views(cursor, [book_id])
+            return [Book(*result)]

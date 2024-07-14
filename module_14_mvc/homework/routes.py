@@ -4,7 +4,7 @@ from wtforms import StringField
 from wtforms.validators import InputRequired
 from typing import List, Optional
 
-from models import init_db, get_all_books, DATA
+from models import get_all_books, DATA
 import models
 
 app: Flask = Flask(__name__)
@@ -68,7 +68,15 @@ def get_books_form() -> tuple[str, int]:
         return f'Неправильно заполненная форма! {form.errors}', 400
 
 
+@app.route('/books/<int:book_id>')
+def get_book_with_id(book_id: int) -> tuple[str, int]:
+    return render_template(
+        'index.html',
+        books=models.get_book_with_id(book_id)
+    ), 200
+
+
 if __name__ == '__main__':
-    init_db(DATA)
+    models.update_table_books(DATA)
     app.config['WTF_CSRF_ENABLED'] = False
     app.run(debug=True)
