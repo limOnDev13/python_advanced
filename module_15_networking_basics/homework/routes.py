@@ -19,7 +19,7 @@ class RoomForm(FlaskForm):
 
 
 @app.route('/add-room', methods=['POST'])
-def get_room() -> tuple[str, int]:
+def add_room() -> tuple[str, int]:
     form = RoomForm()
 
     if form.validate_on_submit():
@@ -29,8 +29,8 @@ def get_room() -> tuple[str, int]:
 
 
 @app.route('/room', methods=['GET'])
-def get_number_rooms() -> tuple[str, int]:
-    """Функция возвращает json с количеством комнат (судя по pre-req к add-room)"""
+def room() -> tuple[str, int]:
+    """Функция возвращает json c информацией о комнатах"""
     check_in: Optional[int] = request.args.get('checkIn', default=None, type=int)
     check_out: Optional[int] = request.args.get('checkOut', default=None, type=int)
     guests_num: Optional[int] = request.args.get('guestsNum', default=None, type=int)
