@@ -3,7 +3,8 @@ from flask_restful import Api, Resource
 from marshmallow import ValidationError
 
 from models import (
-    DATA,
+    DATA_BOOKS,
+    DATA_AUTHORS,
     get_all_books,
     init_db,
     add_book,
@@ -34,5 +35,5 @@ class BookList(Resource):
 api.add_resource(BookList, '/api/books')
 
 if __name__ == '__main__':
-    init_db(initial_records=DATA)
+    init_db(initial_records_books=DATA_BOOKS, initial_records_authors=DATA_AUTHORS)
     app.run(debug=True)

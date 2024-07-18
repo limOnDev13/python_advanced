@@ -2,14 +2,20 @@ import sqlite3
 from dataclasses import dataclass
 from typing import Optional, Union, List, Dict
 
-DATA = [
-    {'id': 0, 'title': 'A Byte of Python', 'author': 'Swaroop C. H.'},
-    {'id': 1, 'title': 'Moby-Dick; or, The Whale', 'author': 'Herman Melville'},
-    {'id': 3, 'title': 'War and Peace', 'author': 'Leo Tolstoy'},
+DATA_BOOKS = [
+    {'id': 0, 'title': 'Капитанская дочка', 'author': 1},
+    {'id': 1, 'title': 'Moby-Dick; or, The Whale', 'author': 3},
+    {'id': 3, 'title': 'Бородино', 'author': 2},
+]
+DATA_AUTHORS: list[dict] = [
+    {'id': 0, 'first_name': 'Александр', 'last_name': 'Пушкин', 'middle_name': 'Сергеевич'},
+    {'id': 1, 'first_name': 'Михаил', 'last_name': 'Лермонтов', 'middle_name': 'Юрьевич'},
+    {'id': 2, 'first_name': 'Герман', 'last_name': 'Мелвилл', 'middle_name': None},
 ]
 
 DATABASE_NAME = 'table_books.db'
 BOOKS_TABLE_NAME = 'books'
+AUTHORS_TABLE_NAME: str = 'authors'
 
 
 @dataclass
@@ -22,7 +28,8 @@ class Book:
         return getattr(self, item)
 
 
-def init_db(initial_records: List[Dict]) -> None:
+def init_db(initial_records_books: List[Dict],
+            initial_records_authors: list[dict]) -> None:
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -35,12 +42,34 @@ def init_db(initial_records: List[Dict]) -> None:
         if not exists:
             cursor.executescript(
                 f"""
-                CREATE TABLE `{BOOKS_TABLE_NAME}`(
-                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                    title TEXT,
-                    author TEXT
+                PRAGMA foreign_key = ON;
+                
+                CREATE TABLE IF NOT EXISTS `{AUTHORS_TABLE_NAME}` (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    first_name TEXT NOT NULL,
+                    last_name TEXT NOT NULL,
+                    middle_name TEXT
                 );
                 """
+            )
+            cursor.executescript(
+                f"""
+                CREATE TABLE IF NOT EXISTS `{BOOKS_TABLE_NAME}`(
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    title TEXT,
+                    author INTEGER REFERENCES {AUTHORS_TABLE_NAME} (id) ON DELETE CASCADE
+                );
+                """
+            )
+            cursor.executemany(
+                f"""
+                INSERT INTO `{AUTHORS_TABLE_NAME}`
+                (first_name, last_name, middle_name) VALUES (?, ?, ?)
+                """,
+                [
+                    (item['first_name'], item['last_name'], item['middle_name'])
+                    for item in initial_records_authors
+                ]
             )
             cursor.executemany(
                 f"""
@@ -49,7 +78,7 @@ def init_db(initial_records: List[Dict]) -> None:
                 """,
                 [
                     (item['title'], item['author'])
-                    for item in initial_records
+                    for item in initial_records_books
                 ]
             )
 
