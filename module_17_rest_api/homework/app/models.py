@@ -154,7 +154,8 @@ def update_book_by_id(book: Book) -> None:
         conn.commit()
 
 
-def delete_book_by_id(book_id: int) -> None:
+def delete_book_by_id(book_id: int) -> Optional[Book]:
+    deleted_book: Optional[Book] = get_book_by_id(book_id)
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -165,6 +166,7 @@ def delete_book_by_id(book_id: int) -> None:
             (book_id,)
         )
         conn.commit()
+        return deleted_book
 
 
 def get_book_by_title(book_title: str) -> Optional[Book]:
