@@ -1,16 +1,16 @@
 from flask import Flask, request
 from flask_restful import Api, Resource
 from marshmallow import ValidationError
+from typing import Optional
 
 from models import (
-    DATA_BOOKS,
-    DATA_AUTHORS,
-    get_all_books,
-    init_db,
-    add_book,
-    get_book_by_id
+    DATA_BOOKS, DATA_AUTHORS, get_all_books, init_db, add_book, get_book_by_id,
+    Book, delete_book_by_id
 )
 from schemas import BookSchema
+
+
+BOOK_NOT_FOUND: dict = {'status': 'Book not found!'}
 
 app = Flask(__name__)
 api = Api(app)
@@ -39,10 +39,20 @@ class OneBook(Resource):
 
     def get(self, id: int) -> tuple[dict, int]:
         schema = BookSchema()
-        return schema.dump(get_book_by_id(id)), 200
+        book: Optional[Book] = get_book_by_id(id)
+        if book:
+            return schema.dump(book), 200
+        else:
+            return BOOK_NOT_FOUND, 404
 
-    def delete(self):
-        pass
+    def delete(self, id: int) -> tuple[dict, int]:
+        schema = BookSchema()
+        deleted_book: Optional[Book] = delete_book_by_id(id)
+        if deleted_book:
+            return schema.dump(deleted_book), 200
+        else:
+            return BOOK_NOT_FOUND, 404
+
 
 
 api.add_resource(BookList, '/api/books')
