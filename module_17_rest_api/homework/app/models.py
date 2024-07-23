@@ -19,9 +19,20 @@ AUTHORS_TABLE_NAME: str = 'authors'
 
 
 @dataclass
+class Author:
+    first_name: str
+    last_name: str
+    middle_name: Optional[str] = None
+    id: Optional[int] = None
+
+    def __getitem__(self, item: str) -> int | str:
+        return getattr(self, item)
+
+
+@dataclass
 class Book:
     title: str
-    author: str
+    author_id: int
     id: Optional[int] = None
 
     def __getitem__(self, item: str) -> Union[int, str]:
@@ -57,7 +68,7 @@ def init_db(initial_records_books: List[Dict],
                 CREATE TABLE IF NOT EXISTS `{BOOKS_TABLE_NAME}`(
                     id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     title TEXT,
-                    author INTEGER REFERENCES {AUTHORS_TABLE_NAME} (id) ON DELETE CASCADE
+                    author_id INTEGER REFERENCES {AUTHORS_TABLE_NAME} (id) ON DELETE CASCADE
                 );
                 """
             )
@@ -74,7 +85,7 @@ def init_db(initial_records_books: List[Dict],
             cursor.executemany(
                 f"""
                 INSERT INTO `{BOOKS_TABLE_NAME}`
-                (title, author) VALUES (?, ?)
+                (title, author_id) VALUES (?, ?)
                 """,
                 [
                     (item['title'], item['author'])
@@ -84,7 +95,13 @@ def init_db(initial_records_books: List[Dict],
 
 
 def _get_book_obj_from_row(row: tuple) -> Book:
-    return Book(id=row[0], title=row[1], author=row[2])
+    return Book(id=row[0], title=row[1], author_id=row[2])
+
+
+def _get_author_obj_from_row(row: tuple) -> Author:
+    return Author(
+        id=row[0], first_name=row[1], last_name=row[2],
+        middle_name=row[3] if len(row) == 4 else None)
 
 
 def get_all_books() -> list[Book]:
@@ -101,9 +118,9 @@ def add_book(book: Book) -> Book:
         cursor.execute(
             f"""
             INSERT INTO `{BOOKS_TABLE_NAME}` 
-            (title, author) VALUES (?, ?)
+            (title, author_id) VALUES (?, ?)
             """,
-            (book.title, book.author)
+            (book.title, book.author_id)
         )
         book.id = cursor.lastrowid
         return book
@@ -132,7 +149,7 @@ def update_book_by_id(book: Book) -> None:
             SET title = ?, author = ?
             WHERE id = ?
             """,
-            (book.title, book.author, book.id)
+            (book.title, book.author_id, book.id)
         )
         conn.commit()
 
@@ -162,3 +179,18 @@ def get_book_by_title(book_title: str) -> Optional[Book]:
         book = cursor.fetchone()
         if book:
             return _get_book_obj_from_row(book)
+
+
+def get_author_by_name(first_name: str, last_name: str, middle_name: Optional[str] = None) -> Optional[Author]:
+    """Получение автора по полному имени"""
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            SELECT * FROM {AUTHORS_TABLE_NAME}
+            WHERE first_name = ? AND last_name = ? AND middle_name = ? 
+            """, (first_name, last_name, middle_name)
+        )
+        author = cursor.fetchone()
+        if author:
+            return _get_author_obj_from_row(author)
