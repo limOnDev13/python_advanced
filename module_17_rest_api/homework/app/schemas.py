@@ -12,7 +12,9 @@ class AuthorSchema(Schema):
     @validates_schema
     def validate_full_name(self, data, **kwargs) -> None:
         """Проверка наличия полного имени в бд"""
-        if get_author_by_name(data['first_name'], data['last_name'], data['middle_name']):
+        if get_author_by_name(
+                data['first_name'], data['last_name'],
+                data['middle_name'] if 'middle_name' in data else None):
             raise ValidationError(f"The author with the name {data['first_name']} {data['last_name']}"
                                   f" is already in the database!")
 
@@ -35,7 +37,7 @@ class BookSchema(Schema):
             )
 
     @post_load
-    def create_book(self, data: dict, **kwargs) -> Book:
+    def create_book(self, data: dict, **kwargs) -> tuple[Book, Author]:
         author = data.pop('author')
         data['author_id'] = author['id']
-        return Book(**data)
+        return Book(**data), author

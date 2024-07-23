@@ -5,7 +5,7 @@ from typing import Optional
 
 from models import (
     DATA_BOOKS, DATA_AUTHORS, get_all_books, init_db, add_book, get_book_by_id,
-    Book, delete_book_by_id
+    Book, delete_book_by_id, update_book_by_id, Author
 )
 from schemas import BookSchema
 
@@ -25,7 +25,7 @@ class BookList(Resource):
         data = request.json
         schema = BookSchema()
         try:
-            book = schema.load(data)
+            book, _ = schema.load(data)
         except ValidationError as exc:
             return exc.messages, 404
 
@@ -34,8 +34,20 @@ class BookList(Resource):
 
 
 class OneBook(Resource):
-    def put(self):
-        pass
+    def put(self, id: int):
+        schema = BookSchema()
+        data = request.json
+        try:
+            new_book_data, new_author_info = schema.load(data)
+        except ValidationError as exc:
+            return exc.messages, 404
+
+        result: Optional[Book, Author] = update_book_by_id(
+            book_id=id, new_book_data=new_book_data, new_author_data=new_author_info)
+
+        if result is None:
+            return BOOK_NOT_FOUND, 404
+        return schema.dump(result[0]), 202
 
     def get(self, id: int) -> tuple[dict, int]:
         schema = BookSchema()
@@ -52,7 +64,6 @@ class OneBook(Resource):
             return schema.dump(deleted_book), 200
         else:
             return BOOK_NOT_FOUND, 404
-
 
 
 api.add_resource(BookList, '/api/books')

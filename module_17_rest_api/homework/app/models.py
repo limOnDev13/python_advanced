@@ -140,18 +140,63 @@ def get_book_by_id(book_id: int) -> Optional[Book]:
             return _get_book_obj_from_row(book)
 
 
-def update_book_by_id(book: Book) -> None:
+def _get_book_id(book: Book) -> Optional[int]:
+    """Так как в схеме книги стоит валидатор на уникальность названия книги, то по нему будем искать id книги.
+     Если такой книги нет, то вернет None"""
     with sqlite3.connect(DATABASE_NAME) as conn:
-        cursor = conn.cursor()
+        cursor = sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            SELECT id FROM {BOOKS_TABLE_NAME} WHERE title = ?
+            """, (book.title,)
+        )
+    book_id, *_ = cursor.fetchone()
+    if book_id:
+        return book_id
+
+
+def get_author_by_id(author_id: int) -> Optional[Author]:
+    """Функция возвращает информацию об авторе (если он есть в бд) по его id"""
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            SELECT * FROM {AUTHORS_TABLE_NAME} WHERE id = ?
+            """, (author_id,)
+        )
+        row = cursor.fetchone()
+        if row:
+            return _get_author_obj_from_row(row)
+
+
+def update_book_by_id(book_id: int, new_book_data: Book, new_author_data: Author) -> Optional[tuple[Book, Author]]:
+    # Получим старую информацию о книге
+    old_book: Optional[Book] = get_book_by_id(book_id)
+    if old_book is None:
+        return None
+
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        # Изменим информацию о книге
         cursor.execute(
             f"""
             UPDATE {BOOKS_TABLE_NAME}
-            SET title = ?, author = ?
+            SET title = ? WHERE id = ?
+            """, (new_book_data.title, book_id)
+        )
+        # Изменим информацию об авторе
+        cursor.execute(
+            f"""
+            UPDATE {AUTHORS_TABLE_NAME}
+            SET first_name = ?, last_name = ?, middle_name = ?
             WHERE id = ?
-            """,
-            (book.title, book.author_id, book.id)
+            """, (new_author_data.first_name, new_author_data.last_name,
+                  new_author_data.middle_name, old_book.author_id)
         )
         conn.commit()
+        new_book_data.id = book_id
+        new_author_data.id = old_book.author_id
+        return new_book_data, new_author_data
 
 
 def delete_book_by_id(book_id: int) -> Optional[Book]:
