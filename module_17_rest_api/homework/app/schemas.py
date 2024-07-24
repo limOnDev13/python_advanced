@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, validates, validates_schema, ValidationError, post_load
 
-from models import get_book_by_title, Book, get_author_by_name, Author
+from models import get_book_by_title, Book, get_author_by_name, Author, get_author_by_id
 
 
 class AuthorSchema(Schema):
@@ -17,6 +17,11 @@ class AuthorSchema(Schema):
                 data['middle_name'] if 'middle_name' in data else None):
             raise ValidationError(f"The author with the name {data['first_name']} {data['last_name']}"
                                   f" is already in the database!")
+
+    @validates('id')
+    def validate_author_id(self, id: int) -> None:
+        if get_author_by_id(id) is None:
+            raise ValidationError(f'Автора с id {id} нет в бд!')
 
     @post_load
     def create_author(self, data: dict, **kwargs) -> Author:
