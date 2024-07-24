@@ -205,6 +205,7 @@ def delete_book_by_id(book_id: int) -> Optional[Book]:
         return None
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor = conn.cursor()
+        cursor.executescript("PRAGMA foreign_keys = ON;")
         cursor.execute(
             f"""
             DELETE FROM {BOOKS_TABLE_NAME}
@@ -283,6 +284,7 @@ def delete_author_by_id(author_id: int) -> Optional[Author]:
 
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor: sqlite3.Cursor = conn.cursor()
+        cursor.executescript("PRAGMA foreign_keys = ON;")
         cursor.execute(
             f"""
             DELETE FROM {AUTHORS_TABLE_NAME}
