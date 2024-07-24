@@ -5,12 +5,14 @@ from typing import Optional
 
 from models import (
     DATA_BOOKS, DATA_AUTHORS, get_all_books, init_db, add_book, get_book_by_id,
-    Book, delete_book_by_id, update_book_by_id, Author
+    Book, delete_book_by_id, update_book_by_id, Author, add_author, get_all_authors,
+    get_author_by_id, delete_author_by_id
 )
-from schemas import BookSchema
+from schemas import BookSchema, AuthorSchema
 
 
 BOOK_NOT_FOUND: dict = {'status': 'Book not found!'}
+AUTHOR_NOT_FOUND: dict = {'status': 'Author not found!'}
 
 app = Flask(__name__)
 api = Api(app)
@@ -66,6 +68,38 @@ class OneBook(Resource):
             return BOOK_NOT_FOUND, 404
 
 
+class AuthorsList(Resource):
+    def get(self) -> tuple[dict, int]:
+        schema = AuthorSchema()
+        return schema.dump(get_all_authors(), many=True), 200
+
+    def post(self) -> tuple[dict, int]:
+        data = request.json
+        schema = AuthorSchema()
+        try:
+            author = schema.load(data)
+        except ValidationError as exc:
+            return exc.messages, 400
+
+        author = add_author(author)
+        return schema.dump(author), 201
+
+
+class OneAuthor(Resource):
+    def get(self, id: int) -> tuple[dict, int]:
+        schema = AuthorSchema()
+        return schema.dump(get_author_by_id(id)), 200
+
+    def delete(self, id: int) -> tuple[dict, int]:
+        schema = AuthorSchema()
+        deleted_book: Optional[Author] = delete_author_by_id(id)
+        if deleted_book is None:
+            return AUTHOR_NOT_FOUND, 404
+        return schema.dump(deleted_book), 202
+
+
+api.add_resource(OneAuthor, '/api/authors/<int:id>')
+api.add_resource(AuthorsList, '/api/authors')
 api.add_resource(BookList, '/api/books')
 api.add_resource(OneBook, '/api/books/<int:id>')
 
