@@ -247,6 +247,8 @@ def get_author_by_name(first_name: str, last_name: str, middle_name: Optional[st
 
 def add_author(author: Author) -> Author:
     """Функция добавляет автора в бд"""
+    if get_author_by_name(author.first_name, author.last_name, author.middle_name):
+        return author
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor: sqlite3.Cursor = conn.cursor()
         cursor.execute(
@@ -276,7 +278,6 @@ def get_all_authors() -> list[Author]:
 def delete_author_by_id(author_id: int) -> Optional[Author]:
     """Функция удаляет автора по id из бд и возвращает автора (если он был в бд). Иначе вернет None"""
     deleted_author: Optional[Author] = get_author_by_id(author_id)
-    print(deleted_author)
     if deleted_author is None:
         return None
 

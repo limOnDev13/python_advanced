@@ -27,11 +27,12 @@ class BookList(Resource):
         data = request.json
         schema = BookSchema()
         try:
-            book, _ = schema.load(data)
+            book, author = schema.load(data)
         except ValidationError as exc:
             return exc.messages, 404
 
         book = add_book(book)
+        author = add_author(author)
         return schema.dump(book), 201
 
 
