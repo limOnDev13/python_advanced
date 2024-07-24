@@ -201,6 +201,8 @@ def update_book_by_id(book_id: int, new_book_data: Book, new_author_data: Author
 
 def delete_book_by_id(book_id: int) -> Optional[Book]:
     deleted_book: Optional[Book] = get_book_by_id(book_id)
+    if deleted_book is None:
+        return None
     with sqlite3.connect(DATABASE_NAME) as conn:
         cursor = conn.cursor()
         cursor.execute(
@@ -241,3 +243,50 @@ def get_author_by_name(first_name: str, last_name: str, middle_name: Optional[st
         author = cursor.fetchone()
         if author:
             return _get_author_obj_from_row(author)
+
+
+def add_author(author: Author) -> Author:
+    """Функция добавляет автора в бд"""
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            INSERT INTO {AUTHORS_TABLE_NAME} (first_name, last_name, middle_name)
+            VALUES (?, ?, ?)
+            """, (author.first_name, author.last_name, author.middle_name)
+        )
+        conn.commit()
+        author.id = cursor.lastrowid
+        return author
+
+
+def get_all_authors() -> list[Author]:
+    """Функция возвращает список всех авторов из бд"""
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            SELECT * FROM {AUTHORS_TABLE_NAME}
+            """
+        )
+        return [_get_author_obj_from_row(row)
+                for row in cursor.fetchall()]
+
+
+def delete_author_by_id(author_id: int) -> Optional[Author]:
+    """Функция удаляет автора по id из бд и возвращает автора (если он был в бд). Иначе вернет None"""
+    deleted_author: Optional[Author] = get_author_by_id(author_id)
+    print(deleted_author)
+    if deleted_author is None:
+        return None
+
+    with sqlite3.connect(DATABASE_NAME) as conn:
+        cursor: sqlite3.Cursor = conn.cursor()
+        cursor.execute(
+            f"""
+            DELETE FROM {AUTHORS_TABLE_NAME}
+            WHERE id = ?
+            """, (author_id,)
+        )
+        deleted_author.id = author_id
+        return deleted_author
