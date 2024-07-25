@@ -64,6 +64,8 @@ class BookList(Resource):
            description: The book has been created
            schema:
              $ref: '#/definitions/Book'
+         400:
+           description: Validation error
         """
         data = request.json
         schema = BookSchema()
