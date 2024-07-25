@@ -1,12 +1,37 @@
-from marshmallow import Schema, fields, validates, ValidationError, post_load
+from marshmallow import Schema, fields, validates, validates_schema, ValidationError, post_load
 
-from models import get_book_by_title, Book
+from models import get_book_by_title, Book, get_author_by_name, Author, get_author_by_id
+
+
+class AuthorSchema(Schema):
+    id = fields.Int(dump_only=True)
+    first_name = fields.Str(required=True)
+    last_name = fields.Str(required=True)
+    middle_name = fields.Str()
+
+    @validates_schema
+    def validate_full_name(self, data, **kwargs) -> None:
+        """Проверка наличия полного имени в бд"""
+        if get_author_by_name(
+                data['first_name'], data['last_name'],
+                data['middle_name'] if 'middle_name' in data else None):
+            raise ValidationError(f"The author with the name {data['first_name']} {data['last_name']}"
+                                  f" is already in the database!")
+
+    @validates('id')
+    def validate_author_id(self, id: int) -> None:
+        if get_author_by_id(id) is None:
+            raise ValidationError(f'Автора с id {id} нет в бд!')
+
+    @post_load
+    def create_author(self, data: dict, **kwargs) -> Author:
+        return Author(**data)
 
 
 class BookSchema(Schema):
     id = fields.Int(dump_only=True)
     title = fields.Str(required=True)
-    author = fields.Str(required=True)
+    author = fields.Nested(AuthorSchema(), only=('first_name', 'last_name', 'middle_name'))
 
     @validates('title')
     def validate_title(self, title: str) -> None:
@@ -17,5 +42,7 @@ class BookSchema(Schema):
             )
 
     @post_load
-    def create_book(self, data: dict) -> Book:
-        return Book(**data)
+    def create_book(self, data: dict, **kwargs) -> tuple[Book, Author]:
+        author = data.pop('author')
+        data['author_id'] = author['id']
+        return Book(**data), author
