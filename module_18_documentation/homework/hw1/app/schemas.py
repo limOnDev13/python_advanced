@@ -1,4 +1,5 @@
-from marshmallow import Schema, fields, validates, validates_schema, ValidationError, post_load
+from marshmallow import validates, validates_schema, post_load
+from flasgger import Schema, fields, ValidationError
 
 from models import get_book_by_title, Book, get_author_by_name, Author, get_author_by_id
 
