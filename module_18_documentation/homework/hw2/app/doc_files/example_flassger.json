@@ -1,0 +1,235 @@
+{
+  "definitions": {
+    "Author": {
+      "properties": {
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "middle_name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "first_name",
+        "last_name"
+      ],
+      "type": "object"
+    },
+    "Book": {
+      "properties": {
+        "author": {
+          "$ref": "#/definitions/Author"
+        },
+        "id": {
+          "readOnly": true,
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "title"
+      ],
+      "type": "object"
+    }
+  },
+  "info": {
+    "title": "BookList",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/authors": {
+      "get": {
+        "description": "This is an endpoint for obtaining the book list",
+        "responses": {
+          "200": {
+            "description": "list of data about books",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Author"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "tags": [
+          "authors"
+        ]
+      },
+      "post": {
+        "description": "This is an endpoint for author creation.",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "new author params",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The author has been created",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          },
+          "400": {
+            "description": "Validation error"
+          }
+        },
+        "tags": [
+          "authors"
+        ]
+      }
+    },
+    "/api/authors/{id}": {
+      "delete": {
+        "description": "This is an endpoint for deleting author from database",
+        "responses": {
+          "202": {
+            "description": "Author was deleted from database",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          },
+          "404": {
+            "description": "Author not found"
+          }
+        },
+        "tags": [
+          "authors"
+        ]
+      },
+      "get": {
+        "description": "This is an endpoint for obtaining the one author",
+        "responses": {
+          "200": {
+            "description": "author data",
+            "schema": {
+              "$ref": "#/definitions/Author"
+            }
+          },
+          "404": {
+            "description": "Author not found"
+          }
+        },
+        "tags": [
+          "authors"
+        ]
+      }
+    },
+    "/api/books": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "list of data about books",
+            "schema": {
+              "items": {
+                "$ref": "#/definitions/Book"
+              },
+              "type": "Array"
+            }
+          }
+        },
+        "summary": "This is an endpoint for obtaining the book list\r",
+        "tags": [
+          "books"
+        ]
+      },
+      "post": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "new book params",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "The book has been created",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          },
+          "400": {
+            "description": "Validation error. The title of the book is already in the database"
+          }
+        },
+        "summary": "This is an endpoint for book creation.\r",
+        "tags": [
+          "books"
+        ]
+      }
+    },
+    "/api/books/{id}": {
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Book was deleted",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          },
+          "404": {
+            "description": "Book not found"
+          }
+        },
+        "summary": "This is an endpoint for deleting book\r",
+        "tags": [
+          "books"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "book data",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          },
+          "404": {
+            "description": "book not found"
+          }
+        },
+        "summary": "This is an endpoint for obtaining book item\r",
+        "tags": [
+          "books"
+        ]
+      },
+      "put": {
+        "parameters": [
+          {
+            "in": "body",
+            "name": "new params for an existing book",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "The book was changed",
+            "schema": {
+              "$ref": "#/definitions/Book"
+            }
+          },
+          "404": {
+            "description": "The book not found"
+          }
+        },
+        "summary": "This endpoint is for changing the book entry\r",
+        "tags": [
+          "books"
+        ]
+      }
+    }
+  },
+  "swagger": "2.0"
+}

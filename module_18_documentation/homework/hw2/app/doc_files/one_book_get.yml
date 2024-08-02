@@ -1,0 +1,11 @@
+This is an endpoint for obtaining book item
+---
+tags:
+  - books
+responses:
+  200:
+    description: book data
+    schema:
+      $ref: '#/definitions/Book'
+  404:
+    description: book not found

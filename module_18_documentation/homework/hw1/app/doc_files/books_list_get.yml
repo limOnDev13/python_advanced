@@ -1,0 +1,11 @@
+This is an endpoint for obtaining the book list
+---
+tags:
+  - books
+responses:
+  200:
+    description: list of data about books
+    schema:
+      type: Array
+      items:
+        $ref: '#/definitions/Book'
