@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "ef65a4be-7c96-4af7-ae30-dd48d70767ef",
+		"name": "BookAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36399069"
+	},
+	"item": [
+		{
+			"name": "get_all_books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Приключения Шерлока Холмса\",\r\n    \"author\":\r\n    {\r\n        \"first_name\": \"Артур\",\r\n        \"last_name\": \"Дойл\",\r\n        \"middle_name\": \"Конан\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_book_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/books/4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_book_by_id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/books/4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "change_book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Моби дик\",\r\n    \"author\": {\r\n        \"first_name\": \"Германннннннн\",\r\n        \"last_name\": \"Мелвиллллллллллллллл\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/books/2",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"books",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_authors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/authors",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "add_new_author",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"first_name\": \"first name\",\r\n    \"last_name\": \"last name\",\r\n    \"middle_name\": \"middle name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/api/authors",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_author_by_id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/authors/4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authors",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete_author",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/api/authors/4",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"authors",
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "book_id",
+			"value": "4",
+			"type": "string"
+		}
+	]
+}

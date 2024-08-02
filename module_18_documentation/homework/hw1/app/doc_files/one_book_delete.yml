@@ -1,0 +1,11 @@
+This is an endpoint for deleting book
+---
+tags:
+  - books
+responses:
+  200:
+    description: Book was deleted
+    schema:
+      $ref: '#/definitions/Book'
+  404:
+    description: Book not found

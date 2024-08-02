@@ -1,0 +1,18 @@
+This endpoint is for changing the book entry
+---
+tags:
+  - books
+parameters:
+  - in: body
+    name: new params for an existing book
+    schema:
+      $ref: '#/definitions/Book'
+responses:
+  202:
+    description:
+      The book was changed
+    schema:
+      $ref: '#/definitions/Book'
+  404:
+    description:
+      The book not found
