@@ -4,12 +4,15 @@ from multiprocessing.pool import ThreadPool
 import functools
 import time
 from typing import Callable, Any
-import logging
+import logging.config
 import os
 import requests
 
+from logging_config import dict_config
 
-logging.basicConfig(level=logging.INFO)
+
+logging.config.dictConfig(dict_config)
+logger = logging.getLogger('tests')
 
 URL: str = 'http://127.0.0.1:5000/api/books'
 
@@ -20,7 +23,7 @@ def timer(func: Callable) -> Callable:
     def wrapper(*args, **kwargs) -> Any:
         start: float = time.time()
         result = func(*args, **kwargs)
-        logging.info(f"Function {func.__name__}. Working time: {time.time() - start}")
+        logger.debug(f"Function {func.__name__}. Working time: {time.time() - start}")
         return result
     return wrapper
 
@@ -28,7 +31,7 @@ def timer(func: Callable) -> Callable:
 @timer
 def execute_with_multithreading(func: Callable, num_queries: int, *args, **kwargs):
     """Функция выполняет функцию многопоточно num_queries раз"""
-    logging.info(f'Количество запросов: {num_queries}')
+    logging.debug(f'Количество запросов: {num_queries}')
     with ThreadPool(processes=os.cpu_count()) as pool:
         for _ in range(num_queries):
             pool.apply_async(func, *args, **kwargs)
@@ -36,7 +39,7 @@ def execute_with_multithreading(func: Callable, num_queries: int, *args, **kwarg
 
 @timer
 def execute_without_multithreading(func: Callable, num_queries: int, *args, **kwargs):
-    logging.info(f'Количество запросов: {num_queries}')
+    logger.debug(f'Количество запросов: {num_queries}')
     for _ in range(num_queries):
         func(*args, **kwargs)
 
@@ -52,24 +55,24 @@ class TestWithoutAdditionalSetting:
         client: BookClient = BookClient()
 
         # С сессией и многопоточностью
-        logging.info(self.SETTING + ' с сессией и многопоточностью')
+        logger.info(self.SETTING + ' с сессией и многопоточностью')
         for num in NUMS_QUERIES:
             execute_with_multithreading(client.get_all_books, num)
         time.sleep(1)
 
         # С сессией и без многопоточности
-        logging.info(self.SETTING + ' с сессией и БЕЗ многопоточности')
+        logger.info(self.SETTING + ' с сессией и БЕЗ многопоточности')
         for num in NUMS_QUERIES:
             execute_without_multithreading(client.get_all_books, num)
 
         # Без сессии и с многопоточностью
-        logging.info(self.SETTING + ' БЕЗ сессии и с многопоточностью')
+        logger.info(self.SETTING + ' БЕЗ сессии и с многопоточностью')
         for num in NUMS_QUERIES:
             execute_with_multithreading(requests.get, num, URL)
         time.sleep(1)
 
         # Без сессии и без многопоточности
-        logging.info(self.SETTING + ' БЕЗ сессии и БЕЗ многопоточности')
+        logger.info(self.SETTING + ' БЕЗ сессии и БЕЗ многопоточности')
         for num in NUMS_QUERIES:
             execute_without_multithreading(requests.get, num, URL)
 
@@ -84,7 +87,7 @@ class TestWithAdditionalSetting(TestWithoutAdditionalSetting):
 
 
 if __name__ == '__main__':
-    # test_without_add_setting = TestWithoutAdditionalSetting()
-    # test_without_add_setting.test()
+    test_without_add_setting = TestWithoutAdditionalSetting()
+    test_without_add_setting.test()
     test_with_add_setting = TestWithAdditionalSetting()
     test_with_add_setting.test()
