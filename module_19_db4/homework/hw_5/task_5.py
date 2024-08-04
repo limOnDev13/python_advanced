@@ -2,25 +2,6 @@ import sqlite3
 
 
 def groups_info(cursor: sqlite3.Cursor) -> list[tuple]:
-    query: str = """
-SELECT gr_id, num_students, avg_grade
-FROM
-(
-    SELECT s.group_id gr_id, count(s.student_id) num_students, round(avg(gr.grade), 2) avg_grade
-    FROM students s
-    JOIN assignments_grades gr ON s.student_id = gr.student_id
-    GROUP BY gr_id
-),
-(
-    SELECT count(sub_s.student_id) num_bad_students, sub_s.group_id bad_group_id
-    FROM students sub_s
-    WHERE sub_s.student_id NOT IN (
-        SELECT sub_gr.student_id
-        FROM assignments_grades sub_gr
-    )
-)
-WHERE gr_id = bad_group_id
-    """
     cursor.execute(
         """
 SELECT gr_id, num_students, avg_grade, num_bad_students, num_late_students, num_students_with_retakes
