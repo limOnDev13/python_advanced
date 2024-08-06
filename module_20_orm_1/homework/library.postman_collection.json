@@ -1,0 +1,154 @@
+{
+	"info": {
+		"_postman_id": "9814693a-99d4-458d-a7cf-71f55ccda1e1",
+		"name": "library",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36399069"
+	},
+	"item": [
+		{
+			"name": "get_all_books",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/books",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_debtors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/debtors",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"debtors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "give_book_to_student",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "book_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "student_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/give_book",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"give_book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hand_over_book",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "book_id",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "student_id",
+							"value": "1",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{url}}/hand_over_book",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"hand_over_book"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_all_records",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/all_records",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"all_records"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
