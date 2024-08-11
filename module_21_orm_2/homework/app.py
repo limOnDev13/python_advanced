@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound
+import json
 
 from db import create_db, Book, Student, get_book_from_student, get_all_debtors, ReceivingBooks
 import db
@@ -69,6 +70,15 @@ def hand_over_book_to_library():
 def get_all_records():
     records: list = ReceivingBooks.get_all_records()
     return jsonify(records=[record.to_json() for record in records])
+
+
+@app.route('/count_books_by_author_id/<int:author_id>')
+def get_count_books_by_authors(author_id: int):
+    result_dict: dict = {
+        'author_id': author_id,
+        'count_books': db.get_count_books_by_author_id(author_id)
+    }
+    return json.dumps(result_dict), 200
 
 
 if __name__ == '__main__':

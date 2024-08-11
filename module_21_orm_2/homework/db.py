@@ -1,5 +1,5 @@
 from sqlalchemy import (create_engine, Column, Integer, Text, Date, Float,
-                        Boolean, DateTime, and_, or_, ForeignKey)
+                        Boolean, DateTime, and_, or_, ForeignKey, func)
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Optional
 
 
-engine = create_engine('sqlite:///library.db')
+engine = create_engine('sqlite:///library.db', echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -175,6 +175,11 @@ def get_all_debtors(term: int = 14) -> list:
         Student.id == ReceivingBooks.student_id,
         or_(ReceivingBooks.count_date_with_books.is_(None), ReceivingBooks.count_date_with_books > term))
     ).all()
+
+
+def get_count_books_by_author_id(author_id: int) -> int:
+    """Функция возвращает количество книг в библиотеке по id автора"""
+    return session.query(func.sum(Book.count)).filter_by(author_id=author_id).scalar()
 
 
 def create_db() -> None:
