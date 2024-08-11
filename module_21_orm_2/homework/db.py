@@ -1,8 +1,10 @@
-from sqlalchemy import create_engine, Column, Integer, Text, Date, Float, Boolean, DateTime, and_, or_
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import (create_engine, Column, Integer, Text, Date, Float,
+                        Boolean, DateTime, and_, or_, ForeignKey)
+from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.exc import NoResultFound
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 
 
@@ -14,13 +16,14 @@ Base = declarative_base()
 
 
 class Book(Base):
-    __tablename__ = 'books'
+    __tablename__ = 'book'
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
     count = Column(Integer, default=1)
     release_date = Column(Date, nullable=False)
-    author_id = Column(Integer, nullable=False)
+    author_id = Column(Integer, ForeignKey('author.id'), nullable=False)
+    author = relationship('Author', back_populates='books')
 
     def __repr__(self) -> str:
         return (f'id: {self.id} | title: {self.name} | count:  {self.count} | '
@@ -47,18 +50,19 @@ class Book(Base):
 
 
 class Author(Base):
-    __tablename__ = 'authors'
+    __tablename__ = 'author'
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
     surname = Column(Text, nullable=False)
+    books = relationship('Book', back_populates='author', cascade='all, delete, delete-orphan', lazy='joined')
 
     def __repr__(self) -> str:
         return f'id: {self.id} | name: {self.name} | surname:  {self.surname}'
 
 
 class Student(Base):
-    __tablename__ = 'students'
+    __tablename__ = 'student'
 
     id = Column(Integer, primary_key=True)
     name = Column(Text, nullable=False)
@@ -67,6 +71,11 @@ class Student(Base):
     email = Column(Text, nullable=False)
     average_score = Column(Float, nullable=False)
     scholarship = Column(Boolean, nullable=False)
+
+    student_book_associations = relationship(
+        'ReceivingBooks', back_populates='student', cascade='all, delete, delete-orphan'
+    )
+    books = association_proxy('student_book_associations', 'books')
 
     def __repr__(self) -> str:
         return (f'id: {self.id} | name: {self.name} | surname:  {self.surname} | '
@@ -90,13 +99,16 @@ class Student(Base):
 
 
 class ReceivingBooks(Base):
-    __tablename__ = 'receiving_books'
+    __tablename__ = 'receiving_book'
 
     id = Column(Integer, primary_key=True)
-    book_id = Column(Integer, nullable=False)
-    student_id = Column(Integer, nullable=False)
+    book_id = Column(Integer, ForeignKey('book.id'))
+    student_id = Column(Integer, ForeignKey('student.id'))
     date_of_issue = Column(DateTime, nullable=False)
     date_of_return = Column(DateTime, default=None)
+
+    student = relationship('Student', back_populates='student_book_associations')
+    book = relationship('Book')
 
     def __repr__(self) -> str:
         return (f'id: {self.id} | book_id: {self.book_id} | student_id:  {self.student_id} | '
@@ -167,22 +179,30 @@ def get_all_debtors(term: int = 14) -> list:
 
 def create_db() -> None:
     """Функция создает бд"""
-    session.query(Book).delete()
-    session.query(Author).delete()
-    session.query(Student).delete()
-    session.query(ReceivingBooks).delete()
-    session.add(Book(
-        name='test_title', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
-        author_id=0
-    ))
-    session.add(Student(
-        name='test_name', surname='test_surname',
-        phone='test_phone', email='test_email',
-        average_score=5.5, scholarship=True))
-    session.add(Student(
-        name='test_name2', surname='test_surname2',
-        phone='test_phone2', email='test_email2',
-        average_score=1.1, scholarship=False))
+    Base.metadata.create_all(engine)
+
+    check_books_exists = session.query(Book).all()
+    check_students_exists = session.query(Student).all()
+    check_author_exists = session.query(Author).all()
+
+    if not check_books_exists:
+        session.add(Book(
+            name='test_title', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
+            author_id=0
+        ))
+    if not check_author_exists:
+        session.add(Author(name='test_author_name', surname='test_author_surname'))
+    if not check_students_exists:
+        session.add(Student(
+            name='test_name', surname='test_surname',
+            phone='test_phone', email='test_email',
+            average_score=5.5, scholarship=True))
+        session.add(Student(
+            name='test_name2', surname='test_surname2',
+            phone='test_phone2', email='test_email2',
+            average_score=1.1, scholarship=False))
     session.commit()
 
-    Base.metadata.create_all(engine)
+
+if __name__ == '__main__':
+    create_db()
