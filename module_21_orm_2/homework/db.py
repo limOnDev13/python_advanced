@@ -1,5 +1,5 @@
 from sqlalchemy import (create_engine, Column, Integer, Text, Date, Float,
-                        Boolean, DateTime, and_, or_, ForeignKey, func)
+                        Boolean, DateTime, and_, or_, ForeignKey, func, select)
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Optional
 
 
-engine = create_engine('sqlite:///library.db', echo=True)
+engine = create_engine('sqlite:///library.db')
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -182,6 +182,21 @@ def get_count_books_by_author_id(author_id: int) -> int:
     return session.query(func.sum(Book.count)).filter_by(author_id=author_id).scalar()
 
 
+def get_books_that_student_has_not_read_yet(student_id: int) -> list:
+    """Функция возвращает список книг каждого автора, которые студент еще не читал,
+     но при этом брал другие книги этого автора"""
+    # Получим таблицу с id книги и id автора, которые прочитал студент с student_id
+    books_read_query = session.query(ReceivingBooks.book_id, Author.id.label('author_id')) \
+        .select_from(ReceivingBooks).join(Book).join(Author)
+    print(books_read_query)
+    print(books_read_query.all())
+
+    # Вернем только те книги, id которых нет в books_read_query, но id автора есть в books_read_query
+    return session.query(Book).filter(and_(
+        Book.id.not_in(select(books_read_query.subquery().c.book_id)),
+        Book.author_id.in_(select(books_read_query.subquery().c.author_id)))).all()
+
+
 def create_db() -> None:
     """Функция создает бд"""
     Base.metadata.create_all(engine)
@@ -192,11 +207,20 @@ def create_db() -> None:
 
     if not check_books_exists:
         session.add(Book(
-            name='test_title', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
+            name='test_title1', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
             author_id=0
         ))
+        session.add(Book(
+            name='test_title2', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
+            author_id=0
+        ))
+        session.add(Book(
+            name='test_title3', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
+            author_id=1
+        ))
     if not check_author_exists:
-        session.add(Author(name='test_author_name', surname='test_author_surname'))
+        session.add(Author(name='test_author_name_1', surname='test_author_surname_1'))
+        session.add(Author(name='test_author_name_2', surname='test_author_surname_2'))
     if not check_students_exists:
         session.add(Student(
             name='test_name', surname='test_surname',

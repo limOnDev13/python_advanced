@@ -74,11 +74,20 @@ def get_all_records():
 
 @app.route('/count_books_by_author_id/<int:author_id>')
 def get_count_books_by_authors(author_id: int):
+    """Эндпоинт для получения количества книг в библиотеке по id автора"""
     result_dict: dict = {
         'author_id': author_id,
         'count_books': db.get_count_books_by_author_id(author_id)
     }
     return json.dumps(result_dict), 200
+
+
+@app.route('/get_books_that_student_has_not_read_yet/<int:student_id>')
+def get_books_that_student_has_not_read_yet(student_id: int):
+    """Эндпоинт для получения списка книг каждого автора, которые студент еще не читал,
+     но при этом брал другие книги этого автора"""
+    books: list[Book] = db.get_books_that_student_has_not_read_yet(student_id)
+    return jsonify(books_not_read=[book.to_json() for book in books]), 200
 
 
 if __name__ == '__main__':
