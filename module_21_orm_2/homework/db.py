@@ -213,6 +213,7 @@ def get_avg_count_books_in_cur_month() -> float:
 
 def get_most_popular_book():
     """Функция возвращает самую популярную книгу у студентов, чей балл выше 4.0"""
+    # Получим таблицу id книг и количества студентов, которые брали эту книгу, и у которых средний бал выше 4.0
     books_of_best_students_q = session.query(
         ReceivingBooks.book_id.label('best_book_id'), func.count(ReceivingBooks.student_id).label('count_books')) \
         .join(Student.student_book_associations) \
@@ -221,6 +222,18 @@ def get_most_popular_book():
     return session.query(Book).join(books_of_best_students_q, Book.id == books_of_best_students_q.c.best_book_id)\
         .order_by(desc(books_of_best_students_q.c.count_books)) \
         .limit(1).one()
+
+
+def get_top_most_reading_students() -> list:
+    """Функция возвращает ТОП-10 самых читающих студентов в этом году"""
+    # Получим таблицу студентов и количества взятых ими книг в этом году
+    reading_students_q = session.query(
+        ReceivingBooks.student_id.label('read_student_id'), func.count(ReceivingBooks.book_id).label('count_books')) \
+        .filter(func.extract('year', ReceivingBooks.date_of_issue) == datetime.today().year) \
+        .group_by(ReceivingBooks.student_id).subquery()
+    return session.query(Student).join(reading_students_q, Student.id == reading_students_q.c.read_student_id) \
+        .order_by(desc(reading_students_q.c.count_books)) \
+        .limit(10).all()
 
 
 def create_db() -> None:

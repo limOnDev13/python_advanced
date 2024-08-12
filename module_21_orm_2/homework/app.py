@@ -104,8 +104,14 @@ def get_avg_count_books():
 def get_most_popular_book():
     """Функция возвращает самую популярную книгу у студентов, чей средний бал выше 4.0"""
     most_popular_book = db.get_most_popular_book()
-    print('most_popular_book =', most_popular_book)
     return jsonify(most_popular_book=most_popular_book.to_json())
+
+
+@app.route('/get_top_most_reading_students', methods=['GET'])
+def get_top_most_reading_students():
+    """Функция - эндпоинт возвращает ТОП-10 самых читающих студентов в этом году"""
+    most_reading_students: list = db.get_top_most_reading_students()
+    return jsonify(most_reading_students=[student.to_json() for student in most_reading_students])
 
 
 if __name__ == '__main__':
