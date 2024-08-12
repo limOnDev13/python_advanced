@@ -25,6 +25,8 @@ class Book(Base):
     author_id = Column(Integer, ForeignKey('author.id'), nullable=False)
     author = relationship('Author', back_populates='books')
 
+    student_book_associations = relationship('ReceivingBooks', back_populates='books')
+
     def __repr__(self) -> str:
         return (f'id: {self.id} | title: {self.name} | count:  {self.count} | '
                 f'release_date: {self.release_date} | author_id: {self.author_id}')
@@ -75,7 +77,7 @@ class Student(Base):
     student_book_associations = relationship(
         'ReceivingBooks', back_populates='student', cascade='all, delete, delete-orphan'
     )
-    books = association_proxy('student_book_associations', 'books')
+    books = association_proxy('student_book_associations', 'book')
 
     def __repr__(self) -> str:
         return (f'id: {self.id} | name: {self.name} | surname:  {self.surname} | '
@@ -108,7 +110,7 @@ class ReceivingBooks(Base):
     date_of_return = Column(DateTime, default=None)
 
     student = relationship('Student', back_populates='student_book_associations')
-    book = relationship('Book')
+    books = relationship('Book', back_populates='student_book_associations', lazy='joined')
 
     def __repr__(self) -> str:
         return (f'id: {self.id} | book_id: {self.book_id} | student_id:  {self.student_id} | '
@@ -186,15 +188,14 @@ def get_books_that_student_has_not_read_yet(student_id: int) -> list:
     """Функция возвращает список книг каждого автора, которые студент еще не читал,
      но при этом брал другие книги этого автора"""
     # Получим таблицу с id книги и id автора, которые прочитал студент с student_id
-    books_read_query = session.query(ReceivingBooks.book_id, Author.id.label('author_id')) \
-        .select_from(ReceivingBooks).join(Book).join(Author)
-    print(books_read_query)
-    print(books_read_query.all())
+    books_read_q = session.query(ReceivingBooks.book_id.label('rec_book_id'), Author.id.label('rec_author_id')) \
+        .join(ReceivingBooks.books).join(Book.author) \
+        .filter(ReceivingBooks.student_id.__eq__(student_id)).subquery()
 
     # Вернем только те книги, id которых нет в books_read_query, но id автора есть в books_read_query
     return session.query(Book).filter(and_(
-        Book.id.not_in(select(books_read_query.subquery().c.book_id)),
-        Book.author_id.in_(select(books_read_query.subquery().c.author_id)))).all()
+        Book.id.not_in(select(books_read_q.c.rec_book_id)),
+        Book.author_id.in_(select(books_read_q.c.rec_author_id)))).all()
 
 
 def create_db() -> None:
@@ -208,15 +209,15 @@ def create_db() -> None:
     if not check_books_exists:
         session.add(Book(
             name='test_title1', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
-            author_id=0
+            author_id=1
         ))
         session.add(Book(
             name='test_title2', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
-            author_id=0
+            author_id=1
         ))
         session.add(Book(
             name='test_title3', count=3, release_date=datetime.strptime('01-01-2000', '%d-%M-%Y'),
-            author_id=1
+            author_id=2
         ))
     if not check_author_exists:
         session.add(Author(name='test_author_name_1', surname='test_author_surname_1'))
