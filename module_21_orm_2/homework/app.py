@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, abort
 from sqlalchemy.exc import NoResultFound, MultipleResultsFound
 import json
+from typing import Optional
 
 from db import create_db, Book, Student, get_book_from_student, get_all_debtors, ReceivingBooks
 import db
@@ -88,6 +89,15 @@ def get_books_that_student_has_not_read_yet(student_id: int):
      но при этом брал другие книги этого автора"""
     books: list[Book] = db.get_books_that_student_has_not_read_yet(student_id)
     return jsonify(books_not_read=[book.to_json() for book in books]), 200
+
+
+@app.route('/get_avg_count_books')
+def get_avg_count_books():
+    """Эндпоинт для получения среднего количества книг, которые брали студенты в текущем месяце"""
+    avg_count_books: Optional[float] = round(db.get_avg_count_books_in_cur_month(), 2)
+    if avg_count_books is None:
+        return json.dumps({'avg_count_books_in_current_month': 0})
+    return json.dumps({'avg_count_books_in_current_month': avg_count_books})
 
 
 if __name__ == '__main__':

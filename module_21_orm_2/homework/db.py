@@ -122,6 +122,7 @@ class ReceivingBooks(Base):
             return None
         return self.date_of_return - self.date_of_issue
 
+
     @classmethod
     def get_all_records(cls):
         return session.query(ReceivingBooks).all()
@@ -196,6 +197,18 @@ def get_books_that_student_has_not_read_yet(student_id: int) -> list:
     return session.query(Book).filter(and_(
         Book.id.not_in(select(books_read_q.c.rec_book_id)),
         Book.author_id.in_(select(books_read_q.c.rec_author_id)))).all()
+
+
+def get_avg_count_books_in_cur_month() -> float:
+    """Функция возвращает среднее количество книг, которые студенты брали в течение текущего месяца"""
+    # Получим таблицу с student_id и количеством книг, взятых в этом месяце
+    nums_books_q = session.query(ReceivingBooks.student_id, func.count(ReceivingBooks.book_id).label('count_books')) \
+        .filter(and_(
+            func.extract('year', ReceivingBooks.date_of_issue) == datetime.today().year,
+            func.extract('month', ReceivingBooks.date_of_issue) == datetime.today().month)) \
+        .group_by(ReceivingBooks.student_id)
+    # Вернем среднее количество
+    return session.query(func.avg(nums_books_q.subquery().c.count_books)).scalar()
 
 
 def create_db() -> None:
