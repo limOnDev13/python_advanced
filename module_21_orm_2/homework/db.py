@@ -1,5 +1,5 @@
 from sqlalchemy import (create_engine, Column, Integer, Text, Date, Float,
-                        Boolean, DateTime, and_, or_, ForeignKey, func, select)
+                        Boolean, DateTime, and_, or_, ForeignKey, func, select, desc)
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -209,6 +209,18 @@ def get_avg_count_books_in_cur_month() -> float:
         .group_by(ReceivingBooks.student_id)
     # Вернем среднее количество
     return session.query(func.avg(nums_books_q.subquery().c.count_books)).scalar()
+
+
+def get_most_popular_book():
+    """Функция возвращает самую популярную книгу у студентов, чей балл выше 4.0"""
+    books_of_best_students_q = session.query(
+        ReceivingBooks.book_id.label('best_book_id'), func.count(ReceivingBooks.student_id).label('count_books')) \
+        .join(Student.student_book_associations) \
+        .filter(Student.average_score > 4.0) \
+        .group_by(ReceivingBooks.book_id).subquery()
+    return session.query(Book).join(books_of_best_students_q, Book.id == books_of_best_students_q.c.best_book_id)\
+        .order_by(desc(books_of_best_students_q.c.count_books)) \
+        .limit(1).one()
 
 
 def create_db() -> None:

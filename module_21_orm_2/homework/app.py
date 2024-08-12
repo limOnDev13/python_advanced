@@ -73,7 +73,7 @@ def get_all_records():
     return jsonify(records=[record.to_json() for record in records])
 
 
-@app.route('/count_books_by_author_id/<int:author_id>')
+@app.route('/count_books_by_author_id/<int:author_id>', methods=['GET'])
 def get_count_books_by_authors(author_id: int):
     """Эндпоинт для получения количества книг в библиотеке по id автора"""
     result_dict: dict = {
@@ -83,7 +83,7 @@ def get_count_books_by_authors(author_id: int):
     return json.dumps(result_dict), 200
 
 
-@app.route('/get_books_that_student_has_not_read_yet/<int:student_id>')
+@app.route('/get_books_that_student_has_not_read_yet/<int:student_id>', methods=['GET'])
 def get_books_that_student_has_not_read_yet(student_id: int):
     """Эндпоинт для получения списка книг каждого автора, которые студент еще не читал,
      но при этом брал другие книги этого автора"""
@@ -91,13 +91,21 @@ def get_books_that_student_has_not_read_yet(student_id: int):
     return jsonify(books_not_read=[book.to_json() for book in books]), 200
 
 
-@app.route('/get_avg_count_books')
+@app.route('/get_avg_count_books', methods=['GET'])
 def get_avg_count_books():
     """Эндпоинт для получения среднего количества книг, которые брали студенты в текущем месяце"""
     avg_count_books: Optional[float] = round(db.get_avg_count_books_in_cur_month(), 2)
     if avg_count_books is None:
         return json.dumps({'avg_count_books_in_current_month': 0})
     return json.dumps({'avg_count_books_in_current_month': avg_count_books})
+
+
+@app.route('/get_most_popular_book', methods=['GET'])
+def get_most_popular_book():
+    """Функция возвращает самую популярную книгу у студентов, чей средний бал выше 4.0"""
+    most_popular_book = db.get_most_popular_book()
+    print('most_popular_book =', most_popular_book)
+    return jsonify(most_popular_book=most_popular_book.to_json())
 
 
 if __name__ == '__main__':
