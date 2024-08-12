@@ -263,7 +263,7 @@ def create_csv_with_students_data(num_students: int = 100, csv_file: str = 'stud
         for _ in range(num_students):
             name: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(random.randint(2, 10))))
             surname: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(random.randint(2, 10))))
-            phone: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(10)))
+            phone: str = '+7(999)-999-99-99'
             email: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(10)))
             average_score: float = random.uniform(0, 10)
             scholarship: bool = random.choice((0, 1))
@@ -305,11 +305,11 @@ def create_db() -> None:
     if not check_students_exists:
         session.add(Student(
             name='test_name', surname='test_surname',
-            phone='test_phone', email='test_email',
+            phone='+7(999)-999-99-99', email='test_email',
             average_score=5.5, scholarship=True))
         session.add(Student(
             name='test_name2', surname='test_surname2',
-            phone='test_phone2', email='test_email2',
+            phone='+7(999)-999-99-99', email='test_email2',
             average_score=1.1, scholarship=False))
     session.commit()
 
