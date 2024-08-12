@@ -4,11 +4,13 @@ from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.event import listens_for
 from datetime import datetime
 from typing import Optional
 import csv
 import random
 import string
+import re
 
 
 engine = create_engine('sqlite:///library.db')
@@ -267,6 +269,13 @@ def create_csv_with_students_data(num_students: int = 100, csv_file: str = 'stud
             scholarship: bool = random.choice((0, 1))
 
             file.write(';'.join((name, surname, phone, email, str(average_score), str(scholarship))) + '\n')
+
+
+@listens_for(Student.phone, 'set')
+def validate_student_phone(target, value, oldvalue, initiator):
+    """Функция - валидатор номера телефона студента"""
+    if not re.match(r'\+7\(9\d{2}\)-\d{3}-\d{2}-\d{2}$', value):
+        raise ValueError('Student phone must have format +7(9**)-***-**-**')
 
 
 def create_db() -> None:
