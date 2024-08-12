@@ -114,6 +114,16 @@ def get_top_most_reading_students():
     return jsonify(most_reading_students=[student.to_json() for student in most_reading_students])
 
 
+@app.route('/load_students_by_csv/<path:csv_file>')
+def load_student_by_csv(csv_file: str):
+    """Функция получает файл csv (через путь в url) и массово добавляет студентов в бд"""
+    result: bool = db.load_students_from_csv(csv_file)
+    if result:
+        return json.dumps({'status': 'OK'}), 200
+    return json.dumps({'status': 'NOT OK'}), 400
+
+
 if __name__ == '__main__':
+    db.create_csv_with_students_data()
     create_db()
     app.run(debug=True)

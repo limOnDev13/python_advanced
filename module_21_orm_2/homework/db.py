@@ -6,6 +6,9 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.exc import NoResultFound
 from datetime import datetime
 from typing import Optional
+import csv
+import random
+import string
 
 
 engine = create_engine('sqlite:///library.db')
@@ -236,6 +239,36 @@ def get_top_most_reading_students() -> list:
         .limit(10).all()
 
 
+def load_students_from_csv(csv_file: str) -> bool:
+    """Функция считывает информацию о студентах из csv файла и добавляет ее в бд"""
+    with open(csv_file, 'r', encoding='utf-8') as file:
+        file_reader = csv.DictReader(
+            file, delimiter=';',
+            fieldnames=['name', 'surname', 'phone', 'email', 'average_score', 'scholarship'])
+
+        rows: list[dict] = list(file_reader)
+        for row in rows:
+            row['scholarship'] = bool(row['scholarship'])
+
+        with session.begin():
+            session.bulk_insert_mappings(Student, rows)
+            return True
+
+
+def create_csv_with_students_data(num_students: int = 100, csv_file: str = 'students_data.csv') -> None:
+    """Функция создает файл csv со случайными студентами"""
+    with open(csv_file, 'w', encoding='utf-8') as file:
+        for _ in range(num_students):
+            name: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(random.randint(2, 10))))
+            surname: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(random.randint(2, 10))))
+            phone: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(10)))
+            email: str = ''.join((random.choice(string.ascii_lowercase) for _ in range(10)))
+            average_score: float = random.uniform(0, 10)
+            scholarship: bool = random.choice((0, 1))
+
+            file.write(';'.join((name, surname, phone, email, str(average_score), str(scholarship))) + '\n')
+
+
 def create_db() -> None:
     """Функция создает бд"""
     Base.metadata.create_all(engine)
@@ -273,4 +306,5 @@ def create_db() -> None:
 
 
 if __name__ == '__main__':
+    create_csv_with_students_data()
     create_db()
