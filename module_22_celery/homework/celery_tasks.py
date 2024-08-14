@@ -40,17 +40,32 @@ def process_group_images(images: list[str]) -> str:
     :param images: Список путей до изображений
     :return: id группы задач
     """
-    celery_logger.debug('1) Before creating a task group')
+    celery_logger.debug('Before creating a task group')
     task_group = group(process_image.s(image) for image in images)
-    celery_logger.debug('2) Before apply_async()')
+    celery_logger.debug('Before apply_async()')
     group_result = task_group.apply_async()
+    celery_logger.debug('Saving group')
+    group_result.save()
 
-    try:
-        celery_logger.debug('3) Get the results of each task from the group')
-        results = group_result.get()
-        celery_logger.debug(f'4.1) Results: {results}')
-        celery_logger.debug(f'4.2) Statuses of results: {[result.status for result in group_result.results]}')
-    except Exception as exc:
-        celery_logger.exception('Exception when receiving the results of a task group', exc_info=exc)
-    finally:
-        return group_result.id
+    return group_result.id
+
+
+def get_group_info(group_id: str) -> Optional[tuple[str, list[str]]]:
+    """
+    Функция возвращает количество выполненных задач в группе и статусы каждой задач
+    :param group_id: id группы
+    :return: Количество выполненных задач - строка вида <кол-во выполненных задач>/<кол-во задач> и
+    список статусов каждой задачи
+    """
+    celery_logger.debug('Before GroupResult.restore()')
+    group_result = celery.GroupResult.restore(group_id)
+
+    if group_result:
+        num_comp_tasks: str = f'{group_result.completed_count()}/{len(group_result)}'
+        celery_logger.debug(f'Number of completed tasks = {num_comp_tasks}')
+        statuses: list[str] = [result.status for result in group_result]
+        celery_logger.debug(f'Tasks statuses = {statuses}')
+
+        return num_comp_tasks, statuses
+    else:
+        celery_logger.debug(f'Group not found')
