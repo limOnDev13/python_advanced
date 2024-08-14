@@ -49,7 +49,7 @@ def process_group_images(images: list[str]) -> str:
         celery_logger.debug('3) Get the results of each task from the group')
         results = group_result.get()
         celery_logger.debug(f'4.1) Results: {results}')
-        celery_logger.debug(f'4.2) Statuses of results: {[result.status for result in results]}')
+        celery_logger.debug(f'4.2) Statuses of results: {[result.status for result in group_result.results]}')
     except Exception as exc:
         celery_logger.exception('Exception when receiving the results of a task group', exc_info=exc)
     finally:
