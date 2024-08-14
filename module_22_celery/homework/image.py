@@ -23,9 +23,9 @@ def blur_image(src_filename: str, dst_filename: Optional[str] = None) -> str:
         with Image.open(src_filename) as img:
             image_logger.debug('3) Loading image')
             img.load()
-            print('4) Blurring image')
+            image_logger.debug('4) Blurring image')
             new_img = img.filter(ImageFilter.GaussianBlur(5))
-            print('5) Saving new image')
+            image_logger.debug('5) Saving new image')
             new_img.save(dst_filename)
 
         return dst_filename
