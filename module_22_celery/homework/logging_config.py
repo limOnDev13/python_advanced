@@ -4,7 +4,7 @@ dict_config: dict = {
     'disable_existing_loggers': False,
     'formatters': {
         'base': {
-            'format': '%(thread)d | %(module)s | %(funcName)s | %(asctime)s | %(message)s'
+            'format': '%(thread)d | %(module)s | %(funcName)s | %(asctime)s | %(levelname)s: %(message)s'
         }
     },
     'handlers': {
@@ -21,12 +21,12 @@ dict_config: dict = {
             'propagate': False
         },
         'tasks_logger': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False
         },
         'image_logger': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False
         }
