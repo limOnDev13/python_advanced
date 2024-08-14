@@ -1,10 +1,12 @@
 """
 Здесь происходит логика обработки изображения
 """
-
 from typing import Optional
-
 from PIL import Image, ImageFilter
+import logging
+
+
+image_logger = logging.getLogger('image_logger')
 
 
 def blur_image(src_filename: str, dst_filename: Optional[str] = None) -> str:
@@ -14,18 +16,21 @@ def blur_image(src_filename: str, dst_filename: Optional[str] = None) -> str:
     """
     if not dst_filename:
         dst_filename = f'blur_{src_filename}'
-        print(dst_filename)
+    image_logger.debug(f'1) src_filename = {src_filename}; dst_filename = {dst_filename}')
 
-    with Image.open(src_filename) as img:
-        print('image load')
-        img.load()
-        print('filter image')
-        new_img = img.filter(ImageFilter.GaussianBlur(5))
-        print('Saving image')
-        new_img.save(dst_filename)
-        print('return')
+    try:
+        image_logger.debug(f'2) Opening {src_filename}')
+        with Image.open(src_filename) as img:
+            image_logger.debug('3) Loading image')
+            img.load()
+            print('4) Blurring image')
+            new_img = img.filter(ImageFilter.GaussianBlur(5))
+            print('5) Saving new image')
+            new_img.save(dst_filename)
 
-    return dst_filename
+        return dst_filename
+    except Exception as exc:
+        image_logger.exception('Exception during processing image', exc_info=exc)
 
 
 if __name__ == '__main__':
