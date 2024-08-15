@@ -29,9 +29,11 @@ def load_config(path: str | None = None) -> Config:
     env = Env()
     env.read_env(path)
 
-    return Config(mail=MailConfig(
-        user=env('SMTP_USER'),
-        password=env('SMTP_PASSWORD'),
-        port=env('SMTP_PORT'),
-        host=env('SMTP_HOST')
-    ))
+    return Config(
+        mail=MailConfig(
+            user=env('SMTP_USER'),
+            password=env('SMTP_PASSWORD'),
+            port=env('SMTP_PORT'),
+            host=env('SMTP_HOST')
+        )
+    )
