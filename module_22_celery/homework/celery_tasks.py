@@ -127,3 +127,9 @@ def setup_periodic_tasks(sender, **kwargs):
         crontab(hour='18', minute='30', day_of_week='1'),
         send_emails_to_all_receivers()
     )
+
+
+@celery.task
+def subscribe_user(email: str) -> bool:
+    """Функция - задача. Подписывает пользователя на еженедельную подписку (просто добавляет в бд email)"""
+    return database.add(email)

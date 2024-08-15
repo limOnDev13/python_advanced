@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 import logging.config
 from typing import Optional
 
-from celery_tasks import process_group_images, get_group_info
+from celery_tasks import process_group_images, get_group_info, subscribe_user
 from config.logging_config import dict_config
 
 
@@ -22,7 +22,7 @@ def process_images():
     receiver = request.json.get('email')
 
     if images and isinstance(images, list):
-        app_logger.info('Endpoint /blur - images have been received')
+        app_logger.info('images have been received')
         return jsonify({'group_id': process_group_images(images, receiver)})
     else:
         app_logger.info('Endpoint /blur - missing or invalid images params')
@@ -41,6 +41,22 @@ def get_status(group_id: str):
     else:
         app_logger.info('Group not found')
         return jsonify(error='Group not found'), 404
+
+
+@app.route('/subscribe', methods=['POST'])
+def subscribe():
+    """Функция - эндпоинт. Пользователь указывает почту и подписывается на рассылку.
+    Каждую неделю ему будет приходить письмо о сервисе на почту."""
+    app_logger.info('Subscribing user')
+    email = request.json.get('email')
+
+    if email and isinstance(email, str):
+        result = subscribe_user.delay()
+        if result.get():
+            return jsonify(status='A user with such an email has already subscribed to the newsletter'), 200
+        else:
+            return jsonify(status='The subscription has been successfully completed'), 201
+    return jsonify(status='The "email" field must be filled in'), 400
 
 
 if __name__ == '__main__':

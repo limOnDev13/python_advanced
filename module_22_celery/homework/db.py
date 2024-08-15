@@ -44,10 +44,10 @@ class UserImages:
         """Метод возвращает словарь с email-ми получателей и их списков групп изображений"""
         return json.loads(self.__r.get(self.__dict_name))
 
-    def add(self, receiver: str, groups: Optional[list[str]] = None) -> None:
+    def add(self, receiver: str, groups: Optional[list[str]] = None) -> bool:
         """Метод добавляет пользователя в бд. Если передан список group_id обработанных изображений,
-        также сохраняет информацию. Если пользователь уже есть в бд - добавляет изображения,
-         если они есть, если нет - ничего не будет делать"""
+        также сохраняет информацию. Если пользователь уже есть в бд - добавляет изображения
+         если они есть и возвращает True. Если пользователя нет - добавит изображения и вернет False"""
         db_logger.info(f'Adding receiver {receiver} with groups {groups}')
         redis_dict_str: str = self.__r.get(self.__dict_name)
         db_logger.debug(f'1) redis_dict_str: {redis_dict_str}')
@@ -59,7 +59,10 @@ class UserImages:
 
         db_logger.debug(f'2) redis_dict = {redis_dict}')
 
+        user_was_in_db: bool = False
+
         if receiver not in redis_dict:
+            user_was_in_db = True
             redis_dict[receiver] = list()
 
         db_logger.debug(f'3) redis_dict[receiver] before adding group: {redis_dict[receiver]}')
@@ -69,6 +72,8 @@ class UserImages:
 
         self.__r.set(self.__dict_name, json.dumps(redis_dict))
         db_logger.debug(f'5) After all redis_dict_str = {self.__r.get(self.__dict_name)}')
+
+        return user_was_in_db
 
     def remove(self, receiver: str) -> list[str]:
         """Метод удаляет получателя из бд. Возвращает хранимые группы изображений у этого пользователя"""
