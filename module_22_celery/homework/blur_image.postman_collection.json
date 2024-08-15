@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "a8921a84-4963-4f8f-b794-ae74f0e84760",
+		"name": "blur_image",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36399069"
+	},
+	"item": [
+		{
+			"name": "blur_image",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"images\": [\r\n        \"./static/images/1.jpg\",\r\n        \"./static/images/2.png\",\r\n        \"./static/images/3.png\"\r\n    ],\r\n    \"email\": \"email\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/blur",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"blur"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_group_info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/status/11111111111111111111111",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"status",
+						"11111111111111111111111"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "subscribe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"email\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/subscribe",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"subscribe"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "volosnikovvladimir69@gmail.com",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "unsubscribe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"email\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/unsubscribe",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"unsubscribe"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		}
+	]
+}
