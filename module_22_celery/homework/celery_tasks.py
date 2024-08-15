@@ -7,6 +7,8 @@ import logging
 from typing import Optional
 
 from image import blur_image
+from mail import send_email
+from config.config import MailConfig
 
 
 celery_logger = logging.getLogger('tasks_logger')
@@ -32,6 +34,11 @@ def process_image(image_path: str) -> Optional[str]:
     except Exception as exc:
         celery_logger.exception('Exception in the blur_image function', exc_info=exc)
         return None
+
+
+@celery.task
+def process_sending_email(group_id: str, receiver: str, image: str, mail_config: MailConfig) -> None:
+    send_email(group_id, receiver, )
 
 
 def process_group_images(images: list[str]) -> str:
@@ -69,3 +76,8 @@ def get_group_info(group_id: str) -> Optional[tuple[str, list[str]]]:
         return num_comp_tasks, statuses
     else:
         celery_logger.debug(f'Group not found')
+
+
+def run_celery() -> None:
+    celery.conf.update(worker_pool_restarts=True)
+    celery.worker_main(['worker', '-B'])
