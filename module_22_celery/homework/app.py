@@ -51,7 +51,7 @@ def subscribe():
     email = request.json.get('email')
 
     if email and isinstance(email, str):
-        result = subscribe_user.delay()
+        result = subscribe_user.delay(email)
         if result.get():
             return jsonify(status='A user with such an email has already subscribed to the newsletter'), 200
         else:
