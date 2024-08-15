@@ -6,7 +6,7 @@ import logging.config
 from typing import Optional
 
 from celery_tasks import process_group_images, get_group_info
-from module_22_celery.homework.config.logging_config import dict_config
+from config.logging_config import dict_config
 
 
 app = Flask(__name__)
@@ -17,12 +17,13 @@ app_logger = logging.getLogger('app_logger')
 @app.route('/blur', methods=['POST'])
 def process_images():
     """Функция - эндпоинт. Ставит в очередь обработку переданных изображений.
-     Возвращает ID группы задач по обработке изображений."""
+     Возвращает ID группы задач по обработке изображений. Если передан email - добавляет в рассылку"""
     images = request.json.get('images')
+    receiver = request.json.get('email')
 
     if images and isinstance(images, list):
         app_logger.info('Endpoint /blur - images have been received')
-        return jsonify({'group_id': process_group_images(images)})
+        return jsonify({'group_id': process_group_images(images, receiver)})
     else:
         app_logger.info('Endpoint /blur - missing or invalid images params')
         return jsonify({'error': 'Missing or invalid images params'}), 400
