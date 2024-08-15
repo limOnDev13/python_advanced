@@ -133,3 +133,14 @@ def setup_periodic_tasks(sender, **kwargs):
 def subscribe_user(email: str) -> bool:
     """Функция - задача. Подписывает пользователя на еженедельную подписку (просто добавляет в бд email)"""
     return database.add(email)
+
+
+@celery.task
+def unsubscribe_user(email: str) -> bool:
+    """Функция - задача. Отписывает пользователя от еженедельной подписки (просто удаляет из бд email).
+    Если пользователь был в бд - вернет True, иначе - False"""
+    try:
+        database.remove(email)
+        return True
+    except ValueError:
+        return False

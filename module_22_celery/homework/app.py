@@ -5,7 +5,7 @@ from flask import Flask, request, jsonify
 import logging.config
 from typing import Optional
 
-from celery_tasks import process_group_images, get_group_info, subscribe_user
+from celery_tasks import process_group_images, get_group_info, subscribe_user, unsubscribe_user
 from config.logging_config import dict_config
 
 
@@ -52,11 +52,33 @@ def subscribe():
 
     if email and isinstance(email, str):
         result = subscribe_user.delay(email)
-        if result.get():
-            return jsonify(status='A user with such an email has already subscribed to the newsletter'), 200
+        while not result.successful():
+            # Ждем пока задача не выполнится
+            pass
+
+        if not result.get():
+            return jsonify(status='An user with such an email has already subscribed to the newsletter'), 200
         else:
             return jsonify(status='The subscription has been successfully completed'), 201
     return jsonify(status='The "email" field must be filled in'), 400
+
+
+@app.route('/unsubscribe', methods=['POST'])
+def unsubscribe():
+    """Функция - эндпоинт. Отписывает пользователя от рассылки"""
+    app_logger.info('Unsubscribing user')
+    email = request.json.get('email')
+
+    if email and isinstance(email, str):
+        result = unsubscribe_user.delay(email)
+        while not result.successful():
+            # Ждем пока задача не выполнится
+            pass
+
+        if result.get():
+            return jsonify(status='An user was deleted'), 200
+        else:
+            return jsonify(status='User not found'), 404
 
 
 if __name__ == '__main__':
