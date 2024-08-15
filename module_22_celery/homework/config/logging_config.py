@@ -25,10 +25,11 @@ dict_config: dict = {
             'handlers': ['console'],
             'propagate': False
         },
-        'image_logger': {
+        'utils_logger': {
             'level': 'DEBUG',
             'handlers': ['console'],
             'propagate': False
-        }
+        },
+
     }
 }
