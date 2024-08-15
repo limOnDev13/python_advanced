@@ -150,3 +150,8 @@ prettifier.py
 /module_14_mvc/materials/mvc_with_flask/table_books.db
 /module_15_networking_basics/homework/booking.db
 /module_20_orm_1/homework/db.sql
+
+# .env
+/module_22_celery/homework/.env
+# blured images
+/module_22_celery/homework/static/blured_images
