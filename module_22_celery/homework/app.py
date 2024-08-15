@@ -6,7 +6,7 @@ import logging.config
 from typing import Optional
 
 from celery_tasks import process_group_images, get_group_info
-from logging_config import dict_config
+from module_22_celery.homework.config.logging_config import dict_config
 
 
 app = Flask(__name__)
