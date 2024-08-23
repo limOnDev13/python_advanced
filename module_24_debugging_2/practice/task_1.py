@@ -14,6 +14,7 @@ def get_graph_image():
         return send_file(graph_path, mimetype='image/png'), 200
     return 'Image not found', 404
 
+
 @app.route('/hello')
 def hello():
     return 'Hello, world!', 200
