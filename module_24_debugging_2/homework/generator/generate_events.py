@@ -7,9 +7,10 @@ import requests
 
 def run():
     while True:
-        requests.get("http://0.0.0.0:5000/hello_world", timeout=1)
+        requests.get("http://app:5000/hello_world", timeout=1)
         time.sleep(1)
 
 
 if __name__ == '__main__':
+    time.sleep(10)
     run()
