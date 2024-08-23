@@ -5,13 +5,14 @@ import logging
 
 
 sentry_sdk.init(
-    dsn="your-dsn-of-project",
-    integrations=[FlaskIntegration()],
-
+    dsn="https://75bb0a7aff2d3cd0f9e0e91c6d2da273@o4507826285051904.ingest.de.sentry.io/4507826287935568",
     # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
+    # of transactions for tracing.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
     # We recommend adjusting this value in production.
-    traces_sample_rate=1.0
+    profiles_sample_rate=1.0,
 )
 
 app = Flask(__name__)
