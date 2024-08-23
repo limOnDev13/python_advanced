@@ -2,7 +2,7 @@ global:
   scrape_interval:     3s
 
   external_labels:
-    monitor: 'flask-app.py'
+    monitor: 'flask-app'
 
 
 scrape_configs:
@@ -14,7 +14,7 @@ scrape_configs:
   - job_name: 'flask'
 
     dns_sd_configs:
-      - names: ['app.py']
+      - names: ['app']
         port: 5000
         type: A
         refresh_interval: 5s
