@@ -155,3 +155,5 @@ prettifier.py
 /module_22_celery/homework/.env
 # blured images
 /module_22_celery/homework/static/blured_images
+/.venv-3.12/
+/.venv-3.11/
