@@ -1,17 +1,18 @@
 from flask import Flask
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func, inspect
 from sqlalchemy.orm import sessionmaker
 import requests
 from typing import List
 import time
-import logging
+import random
+import logging.config
 
 from .models import Base, User, Coffee
+from .log_config import dict_config
 
 
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
+logging.config.dictConfig(dict_config)
+logger = logging.getLogger('init_logger')
 
 app = Flask(__name__)
 engine = create_engine('postgresql://admin:admin@localhost')
@@ -32,8 +33,10 @@ def random_coffee(num_coffee: int = 10) -> List[Coffee]:
             logger.debug(f'{counter} попытка получения рандомного кофе')
             response = requests.get(RANDOM_COFFEE_URL)
             coffee = response.json()
+            logger.debug(f'Получено coffee = {coffee}')
             coffee_list.append(coffee)
             time.sleep(2)  # Задержка, чтобы избежать 429 кода ответа
+            counter += 1
         except Exception as exc:
             logger.exception('Попытка провалилась', exc_info=exc)
         else:
@@ -47,16 +50,19 @@ def random_coffee(num_coffee: int = 10) -> List[Coffee]:
             ]
 
 
-def random_user(num_users: int = 10) -> List[User]:
+def random_user(coffe_ids: list[int], num_users: int = 10) -> List[User]:
     """Функция возвращает словарь с генерированными пользователями"""
     users: List[User] = list()
-    idx: int = 0
+    idx: int = 1
 
     while len(users) < num_users:
         try:
-            logger.debug(f'{idx} попытка получения рандомного пользователя')
-            user = requests.get(RANDOM_USER_URL).json()
+            logger.debug(f'{idx - 1} попытка получения рандомного пользователя')
             address = requests.get(RANDOM_ADDRESS_URL).json()
+            logger.debug(f'Получен address = {address}')
+            time.sleep(2)
+            user = requests.get(RANDOM_USER_URL).json()
+            logger.debug(f'Получен user = {user}')
             user['address'] = address
             users.append(user)
             idx += 1
@@ -66,23 +72,38 @@ def random_user(num_users: int = 10) -> List[User]:
         else:
             logger.debug('Попытка успешная')
 
-    return [User(name=user['name'], has_sale=user['has_sale'], address=user['address'], coffee_id=coffee_id)
-            for coffee_id, user in enumerate(users)]
+    return [User(name=user['name'],
+                 has_sale=user['has_sale'],
+                 address=user['address'],
+                 coffee_id=random.choice(coffe_ids))
+            for user in users]
 
 
-# Base.metadata.drop_all(engine)
-logger.debug('До Base.metadata.create_all(engine)')
-Base.metadata.create_all(engine)
-logger.debug('После Base.metadata.create_all(engine)')
+# Если бд пустая - соберем ее
+if not inspect(engine).get_table_names():
+    # Base.metadata.drop_all(engine)
+    logger.info('В базе нет таблиц - соберем их')
+    Base.metadata.create_all(engine)
+else:
+    logger.info('БД уже создана')
 
 if not session.query(Coffee).first():
-    logger.debug('В таблице Coffee нет данных - начинаю загрузку рандомного кофе')
+    logger.info('В таблице Coffee нет данных - начинаю загрузку рандомного кофе')
     objects = random_coffee()
     session.bulk_save_objects(objects)
     session.commit()
+else:
+    count_records: int = session.query(func.count(Coffee.id)).scalar()
+    logger.info(f'В таблице Coffee {count_records} записей')
 
 if not session.query(User).first():
-    logger.debug('В таблице User нет данных - начинаю загрузку рандомного пользователя')
-    objects = random_user()
+    logger.info('В таблице User нет данных - начинаю загрузку рандомного пользователя')
+    # Получим список id кофе
+    coffee_idx: list = session.query(Coffee.id).all()
+    coffee_idx = [row_with_id[0] for row_with_id in coffee_idx]
+    objects = random_user(coffee_idx)
     session.bulk_save_objects(objects)
     session.commit()
+else:
+    count_records: int = session.query(func.count(User.id)).scalar()
+    logger.info(f'В таблице User {count_records} записей')
