@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "cbd3d2e7-0784-4e00-b600-0b4083bca080",
+		"name": "Coffee(module_27)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36399069"
+	},
+	"item": [
+		{
+			"name": "Add new user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"test_name\",\n    \"address\": {\n        \"city\": \"test_city\",\n        \"country\": \"test_country\"\n    },\n    \"coffee_id\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_list_users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_coffee_list_by_title",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/coffee/look",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"coffee",
+						"look"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_list_coffee",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/coffee",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"coffee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_unique_elements_in_notes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/unique_notes",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"unique_notes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_users_from_country",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/users/test",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"users",
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost:5000",
+			"type": "string"
+		}
+	]
+}
