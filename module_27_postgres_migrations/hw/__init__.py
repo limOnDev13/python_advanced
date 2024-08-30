@@ -73,37 +73,41 @@ def random_user(coffe_ids: list[int], num_users: int = 10) -> List[User]:
             logger.debug('Попытка успешная')
 
     return [User(name=user['name'],
-                 has_sale=user['has_sale'],
+                 # has_sale=user['has_sale'],
+                 surname=None if 'surname' not in user else user['surname'],
                  address=user['address'],
                  coffee_id=random.choice(coffe_ids))
             for user in users]
 
 
-# Если бд пустая - соберем ее
-if not inspect(engine).get_table_names():
-    # Base.metadata.drop_all(engine)
-    logger.info('В базе нет таблиц - соберем их')
-    Base.metadata.create_all(engine)
-else:
-    logger.info('БД уже создана')
+def create_init_data(engine, session):
+    # Если бд пустая - соберем ее
+    if not inspect(engine).get_table_names():
+        # Base.metadata.drop_all(engine)
+        logger.info('В базе нет таблиц - соберем их')
+        Base.metadata.create_all(engine)
+    else:
+        logger.info('БД уже создана')
 
-if not session.query(Coffee).first():
-    logger.info('В таблице Coffee нет данных - начинаю загрузку рандомного кофе')
-    objects = random_coffee()
-    session.bulk_save_objects(objects)
-    session.commit()
-else:
-    count_records: int = session.query(func.count(Coffee.id)).scalar()
-    logger.info(f'В таблице Coffee {count_records} записей')
+    with session.begin():
+        if not session.query(Coffee).first():
+            logger.info('В таблице Coffee нет данных - начинаю загрузку рандомного кофе')
+            objects = random_coffee()
+            session.bulk_save_objects(objects)
+            session.commit()
+        else:
+            count_records: int = session.query(func.count(Coffee.id)).scalar()
+            logger.info(f'В таблице Coffee {count_records} записей')
 
-if not session.query(User).first():
-    logger.info('В таблице User нет данных - начинаю загрузку рандомного пользователя')
-    # Получим список id кофе
-    coffee_idx: list = session.query(Coffee.id).all()
-    coffee_idx = [row_with_id[0] for row_with_id in coffee_idx]
-    objects = random_user(coffee_idx)
-    session.bulk_save_objects(objects)
-    session.commit()
-else:
-    count_records: int = session.query(func.count(User.id)).scalar()
-    logger.info(f'В таблице User {count_records} записей')
+    with session.begin():
+        if not session.query(User).first():
+            logger.info('В таблице User нет данных - начинаю загрузку рандомного пользователя')
+            # Получим список id кофе
+            coffee_idx: list = session.query(Coffee.id).all()
+            coffee_idx = [row_with_id[0] for row_with_id in coffee_idx]
+            objects = random_user(coffee_idx)
+            session.bulk_save_objects(objects)
+            session.commit()
+        else:
+            count_records: int = session.query(func.count(User.id)).scalar()
+            logger.info(f'В таблице User {count_records} записей')

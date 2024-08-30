@@ -7,7 +7,9 @@ from module_27_postgres_migrations.hw import session
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
-    has_sale = fields.Bool(required=True)
+    # has_sale = fields.Bool(required=True)
+    surname = fields.Str()
+    patronomic = fields.Str()
     address = fields.Dict(required=True)
     coffee_id = fields.Int(required=True)
 

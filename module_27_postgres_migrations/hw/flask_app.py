@@ -3,7 +3,7 @@ from marshmallow import ValidationError
 from sqlalchemy import func
 import logging
 
-from module_27_postgres_migrations.hw import app, session
+from module_27_postgres_migrations.hw import app, session, engine, create_init_data
 from models import User, Coffee
 from schemas import UserSchema
 
@@ -74,4 +74,5 @@ def get_list_users_in_country(country: str):
 
 
 if __name__ == '__main__':
+    create_init_data(engine, session)
     app.run(debug=True)

@@ -36,7 +36,8 @@ class User(Base):
 
     id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
     name = Column(VARCHAR(50), nullable=False)
-    has_sale = Column(BOOLEAN)
+    surname = Column(VARCHAR(100), nullable=True)
+    patronomic = Column(VARCHAR(100), nullable=True)
     address = Column(JSON)
     coffee_id = Column(Integer, ForeignKey('coffee.id'))
     coffee = relationship("Coffee", backref="users")
