@@ -41,6 +41,7 @@ def test_create_parking(client):
     assert result == test_parking
 
 
+@pytest.mark.parking
 def test_check_in_to_parking_lot(client):
     """Тест для проверки заезда на парковку. Ендпоинт должен вернуть 201 код и инфу о лоте.
     Также поле time_in не должно быть None, а поле time_out должен быть None. Количество свободных мест
@@ -72,6 +73,7 @@ def test_check_in_to_parking_lot(client):
     assert before_count - 1 == q_count_available_places.scalar()
 
 
+@pytest.mark.parking
 def test_check_out_to_parking_lot(client):
     """Тест для проверки выезда с парковки. Ендпоинт должен вернуть 202 код и инфу о лоте.
     Также поле time_in и time_out не должны быть None, причем time_out > time_in.
