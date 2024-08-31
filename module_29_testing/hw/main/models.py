@@ -1,4 +1,5 @@
-from module_29_testing.hw.main import db
+from . import db
+from typing import Dict, Any
 
 
 class Client(db.Model):
@@ -10,10 +11,15 @@ class Client(db.Model):
     credit_card = db.Column(db.String(50))
     car_number = db.Column(db.String(10))
 
-    client_parking_associations = db.relationship(
+    client_parking_association = db.relationship(
         'ClientParking', back_populates='client', cascade='all, delete-orphan'
     )
-    list_parking = db.association_proxy('client_parking_associations', 'parking')
+    list_parking = db.relationship('Parking', secondary='client_parking', back_populates='clients')
+
+    def to_json(self) -> Dict[str, Any]:
+        return {c.name: getattr(self, c.name) for c in
+                self.__table__.columns}
+
 
 
 class Parking(db.Model):
@@ -28,8 +34,11 @@ class Parking(db.Model):
     client_parking_association = db.relationship(
         'ClientParking', back_populates='parking', cascade='all, delete-orphan'
     )
-    clients = db.association_proxy('client_parking_association', 'client')
+    clients = db.relationship('Client', secondary='client_parking', back_populates='list_parking')
 
+    def to_json(self) -> Dict[str, Any]:
+        return {c.name: getattr(self, c.name) for c in
+                self.__table__.columns}
 
 
 class ClientParking(db.Model):
@@ -39,8 +48,12 @@ class ClientParking(db.Model):
     client_id = db.Column(db.Integer, db.ForeignKey('client.id'))
     parking_id = db.Column(db.Integer, db.ForeignKey('parking.id'))
     time_in = db.Column(db.DateTime)
-    timr_out = db.Column(db.DateTime)
+    time_out = db.Column(db.DateTime)
     db.UniqueConstraint('client_id', 'parking_id', name='unique_client_parking')
 
     client = db.relationship('Client', back_populates='client_parking_association')
-    parking = db.relationship('Parking', back_populates='client_parking_association')
+    parking = db.relationship('Parking', back_populates='client_parking_association', lazy='joined')
+
+    def to_json(self) -> Dict[str, Any]:
+        return {c.name: getattr(self, c.name) for c in
+                self.__table__.columns}
