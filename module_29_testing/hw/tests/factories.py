@@ -29,6 +29,6 @@ class ParkingFactory(factory.alchemy.SQLAlchemyModelFactory):
         sqlalchemy_session = db.session
 
     address = factory.Faker('address')
-    surname = factory.LazyAttribute(lambda x: random.choice([True, False]))
+    opened = factory.LazyAttribute(lambda x: random.choice([True, False]))
     count_places = factory.LazyAttribute(lambda x: random.randint(0, 100))
     count_available_places = factory.LazyAttribute(lambda x: random.randint(0, x.count_places))

@@ -1,4 +1,3 @@
-import json
 import pytest
 
 from module_29_testing.hw.main.models import Parking

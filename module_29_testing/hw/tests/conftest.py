@@ -51,5 +51,6 @@ def client(app):
 
 @pytest.fixture
 def db(app):
-    with app.app_context():
+    test_app, _ = app
+    with test_app.app_context():
         yield _db
