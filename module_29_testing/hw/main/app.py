@@ -26,7 +26,7 @@ def create_app():
         clients: List[Client] = db.session.query(Client).all()
         return jsonify(clients=[client.to_json() for client in clients]), 200
 
-    @app.route('/clients/<int:client_id>')
+    @app.route('/clients/<int:client_id>', methods=['GET'])
     def get_client_by_id(client_id: int):
         """Эндпоинт возвращает клиента по его id"""
         client: Optional[Client] = db.session.query(Client).where(Client.id == client_id).first()

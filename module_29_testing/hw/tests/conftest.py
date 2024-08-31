@@ -29,14 +29,14 @@ def app():
         client_parking = ClientParking(id=1,
                                        client_id=1,
                                        parking_id=1,
-                                       time_id=datetime.now(),
+                                       time_in=datetime.now(),
                                        time_out=datetime.now())
 
         _db.session.add(client)
         _db.session.add(parking)
         _db.session.add(client_parking)
 
-        yield _app
+        yield _app, _db
 
         _db.session.close()
         _db.drop_all()
@@ -44,8 +44,9 @@ def app():
 
 @pytest.fixture
 def client(app):
-    client = app.test_client()
-    yield client
+    test_app, test_db = app
+    client = test_app.test_client()
+    yield client, test_db
 
 
 @pytest.fixture
